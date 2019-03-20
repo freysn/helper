@@ -245,17 +245,21 @@ void cimgWriteRGB(std::string fname, std::vector<VT> dataVec, const I3& dim,
   cimgWrite(fname, data, dim, nChannels, flip, outDim);
 }
 
-  template<typename VT, typename I3>
-  void cimgWriteRGBA(std::string fname, std::vector<VT> dataVec, const I3& dim, 
+  template<typename DATA, typename I3>
+  void cimgWriteRGBA(std::string fname, DATA dataVec, const I3& dim, 
 		     unsigned char flip=0, const I3& outDim=make_vec<I3>(0,0,0))
 {
   const size_t nChannels = 4;
 
-  assert(!dataVec.empty());
+  
+  //assert(!dataVec.empty());
+  
+  const size_t dataVec_size = dim.x*dim.y;
+  
   typedef decltype(dataVec[0].x) T;
-  std::vector<T> data(dataVec.size()*nChannels);
+  std::vector<T> data(dataVec_size*nChannels);
 
-  for(uint64_t i=0; i<dataVec.size(); i++)
+  for(uint64_t i=0; i<dataVec_size; i++)
     {
       data[i*nChannels+0] = dataVec[i].x;
       data[i*nChannels+1] = dataVec[i].y;

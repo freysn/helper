@@ -43,6 +43,7 @@ namespace helper
       CairoDraw(cairoBackendMode_t mode,
 		F2 dim=F2(0,0), std::string fname="", cairoOpts_t opts = cairoOpts_t())
 	{
+	  _opts = opts;
 	  switch(mode)
 	    {
 	    case cairoBackend_pdf:
@@ -93,10 +94,53 @@ namespace helper
       {
 	return cr;
       }
+      
+      std::pair<std::vector<unsigned char>,F2> getDataRec()
+      {
+	cairo_surface_flush(surface);	
+	
+	F2 from;
+	F2 dim;
+	
+	assert(from.x == 0 && from.y == 0);
+	
+	cairo_recording_surface_ink_extents (surface,
+					     &from.x,
+					     &from.y,
+					     &dim.x,
+					     &dim.y);	
+	
+	
+	cairo_surface_t* surfacePDF = cairo_image_surface_create(_opts.format, dim.x, dim.y);
+	cairo_t* crPDF = cairo_create(surfacePDF);
+	cairo_set_source_surface(crPDF, surface, -from.x, -from.y);
+	cairo_paint(crPDF);
+	cairo_surface_flush(surfacePDF);
+	
+	auto p = cairo_image_surface_get_data(surfacePDF);
+	
+	assert(p != 0);
+	size_t nChannels = 1;
+	if(_opts.format == CAIRO_FORMAT_ARGB32)
+	  {
+	    nChannels = 4;
+	  }
+	else
+	  assert(false);
+	
+	std::vector<unsigned char> img(p, p+(size_t)dim.x*(size_t)dim.y*nChannels);
+	  
+	cairo_destroy(crPDF);
+	cairo_surface_destroy(surfacePDF);	
+	
+	
+	
+	return std::make_pair(img , dim);
+      }
 
       std::pair<unsigned char*,F2> getData()
       {
-	cairo_surface_flush(surface);
+	cairo_surface_flush(surface);	
 	
 	F2 from;
 	F2 dim;
@@ -109,7 +153,7 @@ namespace helper
 					     &dim.x,
 					     &dim.y);
 	
-	return std::make_pair(cairo_image_surface_get_data(surface), dim);
+	return std::make_pair(cairo_image_surface_get_data(surface), dim);	
       }
 
       void finish()
@@ -309,6 +353,8 @@ namespace helper
     protected:
       cairo_surface_t *surface;
       cairo_t *cr;
+      
+      cairoOpts_t _opts;
     };
 
   static void drawMousePointer(cairo_t* cr, double mousePosX, double mousePosY)
