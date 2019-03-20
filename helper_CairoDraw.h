@@ -94,10 +94,22 @@ namespace helper
 	return cr;
       }
 
-      unsigned char* getData()
+      std::pair<unsigned char*,F2> getData()
       {
 	cairo_surface_flush(surface);
-	return cairo_image_surface_get_data(surface);
+	
+	F2 from;
+	F2 dim;
+	
+	assert(from.x == 0 && from.y == 0);
+	
+	cairo_recording_surface_ink_extents (surface,
+					     &from.x,
+					     &from.y,
+					     &dim.x,
+					     &dim.y);
+	
+	return std::make_pair(cairo_image_surface_get_data(surface), dim);
       }
 
       void finish()
