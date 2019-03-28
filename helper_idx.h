@@ -271,8 +271,8 @@ template<typename I3A, typename I3B>
     return o;
   }
 
-template<typename I3>
-bool isWithinBounds(const I3& v, const I3& volDim)
+  template<typename I3, typename I3B>
+bool isWithinBounds(const I3& v, const I3B& volDim)
 {
   return
     v.x >= 0 && v.x < volDim.x

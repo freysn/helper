@@ -281,7 +281,7 @@ namespace helper
   
 
   template<typename T_it>
-  auto normalize(T_it b, T_it e)
+  auto normalize_minmax(T_it b, T_it e)
   {
     const auto mm = std::minmax_element(b, e);
 
@@ -293,6 +293,21 @@ namespace helper
       *it = (*it-minv)/(maxv-minv);
     
     return std::make_pair(minv, maxv);
+  }
+  
+  template<typename T_it>
+  auto normalize_max(T_it b, T_it e)
+  {
+    const auto mm = std::minmax_element(b, e);
+
+    //const auto minv = *mm.first;
+    const auto maxv = *mm.second;
+    
+    
+    for(auto it=b; it != e; it++)
+      *it = *it/maxv;
+    
+    return maxv;
   }
   
   template<typename T>
