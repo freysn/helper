@@ -295,6 +295,12 @@ namespace helper
     return std::make_pair(minv, maxv);
   }
   
+  template<typename T>
+  T iDivUp(T a, T b) 
+  { 
+    static_assert(std::is_integral<T>::value, "Integral required.");
+    return (a % b != 0) ? (a / b + 1) : (a / b); 
+  }
 };
 
 
