@@ -36,6 +36,11 @@ std::vector<std::string> cmd(const std::string command)
   {
     return cmd("ls " + fname);
   }
+  
+  std::vector<std::string> cmd_find(const std::string path, const std::string name)
+  {
+    return cmd("find " + path + " -iname \"" + name + "\"");
+  }
 }
 
 
