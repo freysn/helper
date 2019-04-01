@@ -76,6 +76,24 @@ namespace helper
 		out.data()[cimgIdx(x,y,z,c,outDim, nChannels)];
     }
   
+  template<typename I3>
+  void cimgCrop(unsigned char* dataOut, unsigned char* data, 
+		const I3& dim,
+		const I3& from, const I3& outDim, 
+		int nChannels, unsigned char flip=0)
+  {
+    const auto to = from + outDim;
+    auto out = cimgConvert(data, dim, nChannels, flip);
+    out.crop(from.x, from.y, from.z, to.x, to.y, to.z);
+
+    for(size_t z=0; z<outDim.z; z++)
+      for(size_t y=0; y<outDim.y; y++)
+	for(size_t x=0; x<outDim.x; x++)
+	  for(int c=0; c<nChannels; c++)
+	    dataOut[c+nChannels*(x+outDim.x*(y+outDim.y*z))] =
+	      out.data()[cimgIdx(x,y,z,c,outDim, nChannels)];
+  }
+  
   
 template<typename I3>
 void cimgWrite(std::string fname, unsigned char* data, const I3& dim, 

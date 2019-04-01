@@ -274,17 +274,17 @@ namespace helper
 	// // std::cout << "ref count1: " << cairo_surface_get_reference_count(imgSurf) << std::endl;
 	// // cairo_surface_destroy(imgSurf);
 	
-	std::cout << "ref count1.5: " << cairo_surface_get_reference_count(imgSurf) << std::endl;
+	//std::cout << "ref count1.5: " << cairo_surface_get_reference_count(imgSurf) << std::endl;
 	// // cairo_surface_destroy(imgSurf);
 	
 	cairo_surface_destroy(imgSurf);
 
-	std::cout << "ref count1.7: " << cairo_surface_get_reference_count(imgSurf) << std::endl;
+	//std::cout << "ref count1.7: " << cairo_surface_get_reference_count(imgSurf) << std::endl;
 	
 	cairo_restore(cr);
 		
 	
-       std::cout << "ref count1.8: " << cairo_surface_get_reference_count(imgSurf) << std::endl;
+	//std::cout << "ref count1.8: " << cairo_surface_get_reference_count(imgSurf) << std::endl;
        
 	
 	// while(cairo_surface_get_reference_count(imgSurf))
@@ -295,7 +295,7 @@ namespace helper
 	//assert(cairo_surface_get_reference_count(imgSurf) == 0);
 	
 	
-	std::cout << "finished draw\n";
+       //std::cout << "finished draw\n";
       }
 
       template<typename I4, typename F>
