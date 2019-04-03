@@ -12,7 +12,7 @@
 #include <limits>
 
 #ifndef NO_BZIP2
-#include "losslessCompression/bzip_helper/bzip_helper.h"
+#include "helper/losslessCompression/bzip_helper/bzip_helper.h"
 #endif
 
 namespace helper
