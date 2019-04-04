@@ -96,7 +96,7 @@ namespace helper
 	return cr;
       }
       
-      std::pair<std::vector<unsigned char>,F2> getDataRec()
+      std::tuple<std::vector<unsigned char>,F2, size_t> getDataRec()
       {
 	cairo_surface_flush(surface);	
 	
@@ -119,6 +119,9 @@ namespace helper
 	cairo_surface_flush(surfacePDF);
 	
 	auto p = cairo_image_surface_get_data(surfacePDF);
+	const auto stride = cairo_image_surface_get_stride (surfacePDF);
+	assert(cairo_image_surface_get_width (surfacePDF) == dim.x);
+	assert(cairo_image_surface_get_height (surfacePDF) == dim.y);
 	
 	assert(p != 0);
 	size_t nChannels = 1;
@@ -136,7 +139,7 @@ namespace helper
 	
 	
 	
-	return std::make_pair(img , dim);
+	return std::make_tuple(img , dim, stride);
       }
 
       std::pair<unsigned char*,F2> getData()
@@ -350,6 +353,33 @@ namespace helper
     
     return cairo4;
   }
+      
+      template<typename F4>
+      static F4 cairo42rgba(const F4& cairo4)
+      {
+#ifndef __CUDACC__
+	static_assert(std::is_same<decltype(cairo4.x), uint8_t>(), "only 8bit channels are supported");
+#endif
+    
+	F4 rgba=cairo4;
+	
+	std::swap(rgba.x, rgba.z);
+
+	const double alpha = rgba.w/255.;
+	
+	auto dePreMulitply = 
+	  [alpha](double v)
+	  {
+	    v /= alpha;
+	    return std::clamp(v, 0., 255.);
+	  };
+
+	rgba.x = dePreMulitply(rgba.x);
+	rgba.y = dePreMulitply(rgba.y);
+	rgba.z = dePreMulitply(rgba.z);
+	
+	return rgba;
+      }
       
     protected:
       cairo_surface_t *surface;
