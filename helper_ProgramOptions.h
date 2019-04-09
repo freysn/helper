@@ -7,6 +7,8 @@
 #include <cassert>
 #include "helper/helper_asciiFile.h"
 
+#include <iostream>
+
 namespace helper
 {
   template<typename T=const char**>
