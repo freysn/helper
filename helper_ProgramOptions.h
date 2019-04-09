@@ -92,7 +92,7 @@ namespace helper
 	  std::vector<std::string> out;
 	  for(int i=0; i<argi; i++)
 	    out.emplace_back(in[i]);
-	    return out;
+	  return out;
 	}
       } convert;
       return helper::writeASCIIv(convert(_argv, _argi), fname);
