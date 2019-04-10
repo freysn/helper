@@ -5,7 +5,7 @@
 template<typename C>
 auto cm_bi_josh(size_t nElemsPerDim)
 {
-  std::vector<C> m(nElemsPerDim, C(0,0,0));
+  std::vector<C> m(nElemsPerDim*nElemsPerDim, C(0,0,0));
   
   C sourceCol(0.1, 0.1, 0.1);
   C targetCol0(0.6, 0.9, 0.7);
