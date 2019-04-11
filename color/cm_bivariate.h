@@ -7,23 +7,31 @@ auto cm_bi_josh(size_t nElemsPerDim)
 {
   std::vector<C> m(nElemsPerDim*nElemsPerDim, C(0,0,0));
   
+  //C sourceCol(0.95, 0.95, 0.95);
   C sourceCol(0.1, 0.1, 0.1);
-  C targetCol0(0.6, 0.9, 0.7);
-  C targetCol1(0.9, 0.65, 0.8);
+  //C targetCol0(0.53, 0.87, 0.67);
+  //C targetCol1(0.91, 0.64, 0.82);
+  
+  C targetCol0(235./255., 161./255., 3./255.);
+  C targetCol1(0., 152./255., 1.);
+    
   
   for(size_t i=0; i<nElemsPerDim; i++)
     {
-      m[i] = helper::mix(sourceCol, targetCol0, static_cast<double>(i)/(nElemsPerDim-1));
-      m[i*nElemsPerDim] = helper::mix(sourceCol, targetCol1, static_cast<double>(i)/(nElemsPerDim-1));
+      const double v = static_cast<double>(i)/(nElemsPerDim-1);
+      m[i] = helper::mix(sourceCol, targetCol0, v);
+      m[i*nElemsPerDim] = helper::mix(sourceCol, targetCol1,v);
+      
       
       // The Darken Blending Mode looks at the luminance values in each of the RGB channels and selects either the base color or blend color depending on which is darker.
-      for(size_t y=0; y<nElemsPerDim; y++)
-	for(size_t x=0; x<nElemsPerDim; x++)
+      // THIS IS ACTUALLY THE LIGHTEN MODE
+      for(size_t y=1; y<nElemsPerDim; y++)
+	for(size_t x=1; x<nElemsPerDim; x++)
 	  {
 	    const size_t idx = x+nElemsPerDim*y;
-	    m[idx].x = std::min(m[x].x, m[y*nElemsPerDim].x);
-	    m[idx].y = std::min(m[x].y, m[y*nElemsPerDim].y);
-	    m[idx].z = std::min(m[x].z, m[y*nElemsPerDim].z);
+	    m[idx].x = std::max(m[x].x, m[y*nElemsPerDim].x);
+	    m[idx].y = std::max(m[x].y, m[y*nElemsPerDim].y);
+	    m[idx].z = std::max(m[x].z, m[y*nElemsPerDim].z);
 	  }
     }
   
