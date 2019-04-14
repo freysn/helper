@@ -1022,6 +1022,20 @@ friend V4<T> operator*(const T& rhs, V4<T> lhs)
     out.w = lhs.w*rhs;
     return out;
   }
+  
+#ifdef __CUDACC__
+  __device__ __host__
+#endif
+  friend V4<T> operator*(V4<T> lhs, const V4<T>& rhs)
+  {
+    V4<T> out;
+    out.x = lhs.x*rhs.x;
+    out.y = lhs.y*rhs.y;
+    out.z = lhs.z*rhs.z;
+    out.w = lhs.w*rhs.w;
+    return out;
+  }
+
 
       #ifdef __CUDACC__
   __device__ __host__

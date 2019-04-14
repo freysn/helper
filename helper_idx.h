@@ -199,6 +199,29 @@ template<typename I3>
   return out;
 }
 
+  template<typename I, typename I4>
+#ifdef __CUDACC__
+  __host__ __device__
+#endif  
+  I4 i2iiii(I v, const I4 volDim)
+  {
+    I4 out;
+    auto n = (volDim.x*volDim.y*volDim.z);
+    out.w = v/n;
+    v-= out.w*n;
+    out.z = v/(volDim.x*volDim.y);
+    v -= out.z*volDim.x*volDim.y;
+    out.y = v/volDim.x;
+    out.x = v-out.y*volDim.x;
+
+    //std::cout << __func__ << " " << v << " " << volDim.x << " " << volDim.y << " " << volDim.z << std::endl;
+    assert(out.x < volDim.x
+	   && out.y < volDim.y
+	   && out.z < volDim.z
+	   && out.w < volDim.w);
+    return out;
+  }
+
    template<typename I, typename I3>
       #ifdef __CUDACC__
   __host__ __device__
