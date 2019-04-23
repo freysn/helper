@@ -141,6 +141,20 @@ namespace helper
 	
 	return std::make_tuple(img , dim, stride);
       }
+      
+      std::tuple<std::vector<V4<uint8_t>>,F2, size_t> getDataRecRGBA()
+      {
+	auto rslt = getDataRec();
+	
+	auto p = reinterpret_cast<const V4<uint8_t>*>(&std::get<0>(rslt)[0]);
+	assert(p != 0);
+	std::vector<V4<uint8_t>> img(p, p+static_cast<size_t>(std::get<1>(rslt).x)
+				     *static_cast<size_t>(std::get<1>(rslt).y));
+	for(auto & e : img)
+	  e = cairo42rgba(e);
+	
+	return std::make_tuple(img, std::get<1>(rslt), std::get<2>(rslt));
+      }
 
       std::pair<unsigned char*,F2> getData()
       {
