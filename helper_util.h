@@ -7,6 +7,7 @@
 #include <limits>
 #include <vector>
 #include <random>
+#include "helper/helper_idx.h"
 
 namespace helper
 {
@@ -316,6 +317,26 @@ namespace helper
     static_assert(std::is_integral<T>::value, "Integral required.");
     return (a % b != 0) ? (a / b + 1) : (a / b); 
   }
+  
+  template<typename T, typename DIM>
+  auto crop3(const std::vector<T>& buf, DIM dim, DIM off, DIM outDim, size_t nChannels=1)
+  {
+   
+    assert(off.x+outDim.x <= dim.x);
+    assert(off.y+outDim.y <= dim.y);
+    assert(off.z+outDim.z <= dim.z);
+    
+    std::vector<T> buf2(helper::iii2n(outDim));
+    for(size_t z=0; z<outDim.z; z++)
+      for(size_t y=0; y<outDim.y; y++)
+	for(size_t x=0; x<outDim.x; x++)
+	  for(size_t c=0; c<nChannels; c++)
+	    buf2[c+nChannels*(x+outDim.x*(y+outDim.y*z))] = 
+	      buf[c+nChannels*(off.x+x+dim.x*(off.y+y+dim.y*z))];
+    
+    return buf2;
+  }
+    
 };
 
 
