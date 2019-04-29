@@ -395,6 +395,13 @@ namespace helper
 	return rgba;
       }
       
+      
+      std::string getStatusString() const
+      {
+	auto status = cairo_status(cr);
+	return std::string(cairo_status_to_string(status));
+      }
+      
     protected:
       cairo_surface_t *surface;
       cairo_t *cr;
