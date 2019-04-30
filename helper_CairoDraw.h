@@ -10,6 +10,8 @@
 #include <type_traits>
 #include <cmath>
 #include <iostream>
+#include <tuple>
+#include <algorithm>
 
 
 namespace helper
@@ -94,6 +96,11 @@ namespace helper
       cairo_t* get() const
       {
 	return cr;
+      }
+      
+      cairo_surface_t* getSurface() const
+      {
+	return surface;
       }
       
       std::tuple<std::vector<unsigned char>,F2, size_t> getDataRec()
@@ -453,6 +460,58 @@ namespace helper
 
   }
 
+  class CairoMultiPagePDF
+  {
+  public:
+    
+    CairoMultiPagePDF(std::string fname_in) : 
+      fname(fname_in)
+    {}
+    
+    template<typename CAIRO_DRAW>
+    void operator()(const CAIRO_DRAW& cd)
+    {
+      V2<double> from;
+      V2<double> dim;
+      assert(cairo_surface_status (cd.getSurface()) == CAIRO_STATUS_SUCCESS);
+      
+      cairo_recording_surface_ink_extents (cd.getSurface(),
+					   &from.x,
+					   &from.y,
+					   &dim.x,
+					   &dim.y);
+      
+      if(crPDF == 0)
+	{	  
+	  
+	  surfacePDF = cairo_pdf_surface_create(fname.c_str(),
+								 dim.x, dim.y);
+	  crPDF = cairo_create(surfacePDF);
+	}
+      
+      assert(cairo_status(cd.get()) == CAIRO_STATUS_SUCCESS);
+      assert(cairo_status(crPDF) == CAIRO_STATUS_SUCCESS);
+      
+      cairo_set_source_surface(crPDF, cd.getSurface(), -from.x, -from.y);      
+      cairo_paint(crPDF);
+      //cairo_surface_finish(surfacePDF);
+      cairo_show_page(crPDF);
+      
+      assert(cairo_surface_status (surfacePDF) == CAIRO_STATUS_SUCCESS);
+    }
+    
+    ~CairoMultiPagePDF()
+    {
+      cairo_destroy(crPDF);
+      cairo_surface_destroy(surfacePDF);
+    }
+    
+  private:
+    
+    std::string fname;
+    cairo_surface_t* surfacePDF = 0;
+    cairo_t* crPDF = 0;
+  };
 }
 
 #endif //__HELPER_CAIRO_DRAW__
