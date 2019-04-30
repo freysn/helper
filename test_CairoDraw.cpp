@@ -7,8 +7,9 @@
 int main(int argc, const char** argv)
 {
   {
-    helper::CairoMultiPagePDF cmp("huhu.pdf");
     helper::CairoDraw<V2<double>> cd(helper::cairoBackend_rec);
+    helper::CairoMultiPagePDF cmp("huhu.pdf");
+    
     auto cr = cd.get();
     cairo_set_source_rgba(cr, 1., 0., 0., 1.);
     cairo_rectangle(cr, 10, 13, 24, 28);
@@ -23,20 +24,38 @@ int main(int argc, const char** argv)
     
     
     
-    helper::CairoDraw<V2<double>> cd(helper::cairoBackend_rec);
-    
     helper::CairoMultiPagePDF cmp("huhu2.pdf");  
+    helper::CairoDraw<V2<double>> cd(helper::cairoBackend_rec);
+    //helper::CairoDraw<V2<double>> cd2(helper::cairoBackend_rec);
     
+    
+            
     auto cr = cd.get();
     cairo_set_source_rgba(cr, 1., 0., 0., 1.);
-    cairo_rectangle(cr, 10, 13, 24, 28);
+    cairo_rectangle(cr, 10, 3, 24, 28);
     cairo_fill(cr);      
-      
     
     cmp(cd);
     cmp(cd);
+    
+    if(true)
+      {
+    
+    cairo_set_line_width(cr, 2.);
+    cairo_set_source_rgba(cr, 0., 0., 0., 1.);
+    cairo_move_to(cr, 11, 4);
+    cairo_line_to(cr, 22, 23);
+    cairo_stroke(cr);
+
+    //cd.clear();
+    
+    cairo_set_source_rgba(cr, 0., 0., 1., 1.);
+    cairo_rectangle(cr, 10, 18, 24, 28);
+    cairo_fill(cr);      
+    cairo_surface_flush(cd.getSurface());	
     cmp(cd);
-    cmp(cd);
+    cmp(cd);         
+      }
   }
   
   const V2<int> dim(256, 256);
