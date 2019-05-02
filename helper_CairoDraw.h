@@ -103,6 +103,33 @@ namespace helper
 	return surface;
       }
       
+      void showPage()
+      {
+	cairo_show_page(cr);
+      }
+      
+      template<typename DIM>
+      void resize(DIM dim)
+      {
+	cairo_pdf_surface_set_size (surface,
+				    dim.x,
+				    dim.y);
+      }
+      
+      std::tuple<F2, F2> getExtents() const
+      {
+	F2 from;
+	F2 dim;	
+	
+	cairo_recording_surface_ink_extents (surface,
+					     &from.x,
+					     &from.y,
+					     &dim.x,
+					     &dim.y);	
+	
+	return std::make_tuple(from, dim);
+      }
+      
       std::tuple<std::vector<unsigned char>,F2, size_t> getDataRec()
       {
 	cairo_surface_flush(surface);	

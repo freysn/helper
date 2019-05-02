@@ -35,7 +35,7 @@ testMathFuncs:
 	g++ -g -std=c++14 ${INCLUDES} ${LIB} test_mathFuncs.cpp -o test_mathFuncs
 
 testCairoDraw:
-	g++ -std=c++17 ${INCLUDES} test_CairoDraw.cpp -o test_CairoDraw -lcairo
+	g++ -std=c++17 ${INCLUDES} test_CairoDraw.cpp -o test_CairoDraw -L/opt/local/lib -lcairo
 img2raw:
 	g++ -std=c++11 ${INCLUDES} ${LIB} app_helper_img2raw.cpp -o img2raw
 
