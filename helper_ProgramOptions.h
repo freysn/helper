@@ -36,6 +36,18 @@ namespace helper
       //std::cout << "|" << s << "|" << begin << "|" << end << "|" << len << "|\n";
       return s.substr(begin, len);
     }
+    
+    std::string argStr(size_t from=1) const
+    {
+      std::string o;      
+      for(size_t i=from; i<_argc; i++)
+	{
+	  if(o!="")	    
+	    o += " ";
+	  o += trim(std::string(_argv[i]));
+	}
+      return o;
+    }
 
     std::string nextStr()
       {
@@ -65,7 +77,7 @@ namespace helper
 	{
 	  const bool match = (__s == trim(e));
 
-	  std::cout << __s << " vs " << trim(e) << " " << match << std::endl;
+	  //std::cout << __s << " vs " << trim(e) << " " << match << std::endl;
 	  if(match)
 	    return true;
 	}
