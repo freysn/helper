@@ -12,8 +12,8 @@ auto cm_bi_josh(size_t nElemsPerDim)
   //C targetCol0(0.53, 0.87, 0.67);
   //C targetCol1(0.91, 0.64, 0.82);
   
-  C targetCol0(235./255., 161./255., 3./255.);
-  C targetCol1(0., 152./255., 1.);
+  C targetCol1(235./255., 161./255., 3./255.);
+  C targetCol0(0., 152./255., 1.);
     
   
   for(size_t i=0; i<nElemsPerDim; i++)
