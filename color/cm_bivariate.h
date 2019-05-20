@@ -38,4 +38,36 @@ auto cm_bi_josh(size_t nElemsPerDim)
   return m;
 }
 
+void draw()
+{
+  //
+  // TODO: JUST A DUMP FROM ANOTHER FILES, ADJUST!
+  //
+  using F = double;
+  const size_t cm_nElemsPerDim=32;
+  const auto biColMap = cm_bi_josh<V3<double>>(cm_nElemsPerDim);
+  {
+    const size_t n = 256;
+    const size_t nBuckets =8;
+    const size_t bucketSize = n/nBuckets;
+    std::vector<V3<F>> cols(256*256);
+    for(size_t y=0; y<n; y++)
+      for(size_t x=0; x<n; x++)
+	{
+	  const V2<F> coords(
+			     static_cast<F>(x-x%bucketSize)/(n-1),
+			     static_cast<F>(y-y%bucketSize)/(n-1));
+	  
+	  cols[x+y*n] = cm_bi_map_norm(
+				       coords, 
+				       biColMap,
+				       cm_nElemsPerDim);
+	}
+    
+    // helper::cimgWriteNormRGB("colorMap.png", cols, 
+    // 			     V3<size_t>(n, n, 1));
+  }
+
+}
+
 #endif //__CM_BIVARIATE__
