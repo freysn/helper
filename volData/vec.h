@@ -1131,6 +1131,44 @@ friend inline  void operator*=(V4<T> &a, T b)
 };
 
 template<typename T>
+#ifdef __CUDACC__
+__host__ __device__
+#endif
+V4<T> minv(V4<T> a, V4<T> b)
+{
+#ifndef __CUDACC__
+  using namespace std;
+#endif
+
+  return V4<T>
+    (
+     min(a.x, b.x),
+     min(a.y, b.y),
+     min(a.z, b.z),
+     min(a.w, b.w)
+     );
+}
+
+template<typename T>
+#ifdef __CUDACC__
+__host__ __device__
+#endif
+V4<T> maxv(V4<T> a, V4<T> b)
+{
+#ifndef __CUDACC__
+  using namespace std;
+#endif
+
+  return V4<T>
+    (
+     max(a.x, b.x),
+     max(a.y, b.y),
+     max(a.z, b.z),
+     max(a.w, b.w)
+     );
+}
+
+template<typename T>
       #ifdef __CUDACC__
   __device__ __host__
   #endif
