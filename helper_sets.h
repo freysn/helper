@@ -22,6 +22,16 @@ namespace helper
   }
   
   template<typename T>
+  auto setIntersectionCount(const std::vector<T>& a, const std::vector<T>& b)
+  {
+    Counter count;    
+    std::set_intersection(a.begin(), a.end(),
+			  b.begin(), b.end(),
+			  std::back_inserter(count));
+    return count.count;
+  }
+  
+  template<typename T>
   auto setUnion(const std::vector<T>& a, const std::vector<T>& b)
   {
     std::vector<T> out;
@@ -29,6 +39,16 @@ namespace helper
 		   b.begin(), b.end(),
 		   std::back_inserter(out));
     return out;
+  }
+  
+  template<typename T>
+  size_t setUnionCount(const std::vector<T>& a, const std::vector<T>& b)
+  {
+    Counter count;
+    std::set_union(a.begin(), a.end(),
+		   b.begin(), b.end(),
+		   std::back_inserter(count));
+    return count.count;
   }
   
   template<typename T>
