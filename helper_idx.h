@@ -359,13 +359,14 @@ size_t nUniquePairs(size_t n)
 size_t uniquePairIdx(size_t i, size_t j, size_t n)
 {
   assert(i<j);
+  assert(j<n);
   const auto o = i*n-nUniquePairs(i+1)-(i+1);
   return o+j;
 }
 
-std::vector<size_t> uniquePairs(size_t n)
+std::vector<std::pair<size_t, size_t>> uniquePairs(size_t n)
 {
-  std::vector<size_t> out;
+  std::vector<std::pair<size_t, size_t>> out;
   out.reserve(nUniquePairs(n));
   for(size_t i=0; i<n; i++)
     for(size_t j=i+1; j<n; j++)
