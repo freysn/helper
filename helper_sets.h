@@ -68,6 +68,16 @@ namespace helper
   }
   
   template<typename T>
+  auto setDifferenceCount(const std::vector<T>& a, const std::vector<T>& b)
+  {
+    Counter count;
+    std::set_difference(a.begin(), a.end(),
+			b.begin(), b.end(),
+			std::back_inserter(count));
+    return count.count;
+  }
+  
+  template<typename T>
   auto setDifference(const std::vector<T>& a, const T& b)
   {
     return setDifference(a, std::vector<T>(1,b));

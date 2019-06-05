@@ -349,6 +349,30 @@ template<typename I3A, typename I3B>
   {
     return ii2i_clamp(v, volDim);;
   }
+  
+  
+size_t nUniquePairs(size_t n)
+{
+  return (n*(n-1) )/2;
+}
+
+size_t uniquePairIdx(size_t i, size_t j, size_t n)
+{
+  assert(i<j);
+  const auto o = i*n-nUniquePairs(i+1)-(i+1);
+  return o+j;
+}
+
+std::vector<size_t> uniquePairs(size_t n)
+{
+  std::vector<size_t> out;
+  out.reserve(nUniquePairs(n));
+  for(size_t i=0; i<n; i++)
+    for(size_t j=i+1; j<n; j++)
+      out.emplace_back(i,j);
+  assert(out.size() == nUniquePairs(n));
+  return out;
+}
 
 }
 #endif //__VOL_IDX_HELPER__
