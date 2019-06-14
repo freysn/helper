@@ -375,5 +375,16 @@ std::vector<std::pair<size_t, size_t>> uniquePairs(size_t n)
   return out;
 }
 
+std::vector<std::pair<size_t, size_t>> allPairs(size_t n)
+{
+  std::vector<std::pair<size_t, size_t>> out;
+  out.reserve(n*n);
+  for(size_t i=0; i<n; i++)
+    for(size_t j=0; j<n; j++)
+      out.emplace_back(i,j);
+  assert(out.size()==n*n);
+  return out;
+}
+
 }
 #endif //__VOL_IDX_HELPER__
