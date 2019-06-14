@@ -57,6 +57,17 @@ namespace helper
     return f.good();
   }
   
+  std::string fileExtension(std::string fn)
+  {
+    return fn.substr(fn.find_last_of("."));
+  }
+  
+  
+  bool hasExtension(std::string fn, std::string ext)
+  {
+    return fileExtension(fn)==ext;
+  }
+  
 }
 
 #endif //__HELPER_FILESYSTEM__

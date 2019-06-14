@@ -6,9 +6,9 @@
 namespace helper
 {  
 template<typename T>
-bool writeFile(T* ptr, size_t nElements, char* filenameOut)
+bool writeFile(T* ptr, size_t nElements, char* filenameOut, bool append=false)
 {
-  FILE* pFile = fopen ( filenameOut , "wb" );
+  FILE* pFile = fopen ( filenameOut , append ? "wba" : "wb" );
   if(pFile == NULL)
     return false;
   fwrite((void*)ptr, sizeof(T), nElements, pFile);
@@ -25,7 +25,7 @@ bool writeFile(T* ptr, size_t nElements, char* filenameOut)
 
 template<typename T>
 bool writeFile(T* ptr, size_t nElements,
-               std::string filenameOut)
+               std::string filenameOut, bool append=false)
 {
   /*
   FILE* pFile = fopen ( filenameOut , "wb" );
@@ -34,7 +34,10 @@ bool writeFile(T* ptr, size_t nElements,
   */
   
   std::ofstream myFile;
-  myFile.open (filenameOut.c_str(), std::ios::out | std::ios::binary);
+  auto flags = std::ios::out | std::ios::binary;
+  if(append)
+    flags |= std::ios::app;
+  myFile.open (filenameOut.c_str(), flags);
   if(!myFile.is_open())
     return false;
   myFile.write((char*)ptr, nElements*sizeof(T));
@@ -44,9 +47,9 @@ bool writeFile(T* ptr, size_t nElements,
 
 template<typename T>
 bool writeFile(const std::vector<T>& vec,
-               std::string filenameOut)
+               std::string filenameOut, bool append=false)
 {
-  return writeFile((T*)&vec[0], vec.size(), filenameOut);
+  return writeFile((T*)&vec[0], vec.size(), filenameOut, append);
 }
 
 template<typename O, typename T, typename S>
