@@ -62,6 +62,15 @@ namespace helper
     return fn.substr(fn.find_last_of("."));
   }
   
+  std::string fileName(std::string fn)
+  {
+    const auto pos = fn.find_last_of("/");
+    if(pos==std::string::npos)
+      return fn;
+    else      
+      return fn.substr(pos+1);
+  }
+  
   
   bool hasExtension(std::string fn, std::string ext)
   {
