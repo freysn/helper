@@ -284,7 +284,20 @@ class UserData
     
     outfile << std::endl;
     outfile << "VOLUME_DIM " << _volDim.x << " " << _volDim.y << " " << _volDim.z << std::endl;
-    outfile << "VOLUME_DATA_TYPE UCHAR" << std::endl;
+    outfile << "VOLUME_DATA_TYPE ";
+    switch(_volumeDataType)
+      {
+      case voldattype_float:
+	outfile << "FLOAT";
+	break;
+      case voldattype_uchar:
+	outfile << "UCHAR";
+	break;
+      default:
+	std::cout << __PRETTY_FUNCTION__ << " | data type not supported\n";
+	outfile << "UNKNOWN";
+      }
+    outfile << std::endl;
     outfile << "VOXEL_SIZE " << _voxelSize.x << " " << _voxelSize.y << " " << _voxelSize.z << std::endl;
     return true;
   }
