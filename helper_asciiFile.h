@@ -4,6 +4,7 @@
 #include <fstream>
 
 #include <sstream>
+#include "volData/splitStr.h"
 
 namespace helper
 {
@@ -102,6 +103,19 @@ template<typename V>
     v.clear();
     while (std::getline(ifs, line))
       v.push_back(line);      
+    return true;
+  }
+  
+  template<typename V>
+  bool readASCIIv_split(V& v, const std::string& fname, char delim=' ')
+  {
+    std::vector<std::string> lines;
+    if(!readASCIIv(lines, fname))
+      return false;    
+    
+    for(const auto & e : lines)
+      v.push_back(split(e, delim));
+    
     return true;
   }
 };
