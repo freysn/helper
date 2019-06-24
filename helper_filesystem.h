@@ -31,7 +31,8 @@ namespace helper
       const auto n = std::experimental::filesystem::remove_all(p, ec);
       return n;
 #else
-#warning "REMOVAL OF DIRECTORY ONLY IMPLEMENTED IN EXPERIMENTAL FILESYSTEM MODE"
+      std::cerr << "WARNING: REMOVAL OF DIRECTORY ONLY IMPLEMENTED IN EXPERIMENTAL FILESYSTEM MODE\n";
+      //#warning "REMOVAL OF DIRECTORY ONLY IMPLEMENTED IN EXPERIMENTAL FILESYSTEM MODE"
       return 0;
 #endif
     }
