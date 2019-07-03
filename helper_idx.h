@@ -364,6 +364,12 @@ size_t uniquePairIdx(size_t i, size_t j, size_t n)
   return o+j;
 }
 
+template<typename T>
+size_t uniquePairIdx(const T& p, size_t n)
+{
+  return uniquePairIdx(std::get<0>(p), std::get<1>(p), n);
+}
+
 std::vector<std::pair<size_t, size_t>> uniquePairs(size_t n)
 {
   std::vector<std::pair<size_t, size_t>> out;
