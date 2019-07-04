@@ -322,9 +322,15 @@ namespace helper
   auto crop3(const std::vector<T>& buf, DIM dim, DIM off, DIM outDim, size_t nChannels=1)
   {
    
-    assert(off.x+outDim.x <= dim.x);
-    assert(off.y+outDim.y <= dim.y);
-    assert(off.z+outDim.z <= dim.z);
+    // assert(off.x+outDim.x <= dim.x);
+    // assert(off.y+outDim.y <= dim.y);
+    // assert(off.z+outDim.z <= dim.z);
+    
+    assert(off.x<= dim.x);
+    assert(off.y<= dim.y);
+    assert(off.z<= dim.z);
+    
+    outDim = minv(dim-off, outDim);
     
     std::vector<T> buf2(helper::iii2n(outDim));
     for(size_t z=0; z<outDim.z; z++)
@@ -334,7 +340,7 @@ namespace helper
 	    buf2[c+nChannels*(x+outDim.x*(y+outDim.y*z))] = 
 	      buf[c+nChannels*(off.x+x+dim.x*(off.y+y+dim.y*z))];
     
-    return buf2;
+    return std::make_tuple(buf2, outDim);
   }
     
 };
