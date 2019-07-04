@@ -450,7 +450,7 @@ namespace helper
       cairoOpts_t _opts;
     };
 
-  static void drawMousePointer(cairo_t* cr, double mousePosX, double mousePosY)
+  void drawMousePointer(cairo_t* cr, double mousePosX, double mousePosY)
   {
     //
     // draw mouse pointer
