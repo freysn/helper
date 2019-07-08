@@ -342,6 +342,36 @@ namespace helper
     
     return std::make_tuple(buf2, outDim);
   }
+  
+  template<typename K, typename V, typename COMP>
+  void sortKeysValues(std::vector<K>& keys, std::vector<V>& values, COMP comp)
+  {
+    using E = std::pair<K,V>;
+    assert(keys.size() == values.size());
+    std::vector<E> kv(keys.size());
+    for(size_t i=0; i<keys.size(); i++)
+      kv[i] = std::make_pair(keys[i], values[i]);
+    std::sort(kv.begin(), kv.end(), 
+	      [comp](const E& e0, const E& e1) 
+	      {return comp(e0.first, e1.first);}
+	      );
+    
+    for(size_t i=0; i<keys.size(); i++)
+      std::tie(keys[i], values[i]) = kv[i];
+  }
+  
+  template<typename T, typename I>
+  auto reorder(const std::vector<T>& values, const std::vector<I>& order)
+  {
+    assert(values.size() == order.size());
+    std::vector<T> out(values.size());
+    for(size_t i=0; i<values.size(); i++)
+      {
+	assert(order[i]<values.size());
+	out[i]  = values[order[i]];
+      }
+    return out;
+  }
     
 };
 
