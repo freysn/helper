@@ -360,6 +360,15 @@ namespace helper
       std::tie(keys[i], values[i]) = kv[i];
   }
   
+  template<typename I>
+  auto invertOrder(const std::vector<I>& order)
+  {
+    std::vector<I> out(order.size());
+    for(const auto & i : helper::range_n(order.size()))
+      out[order[i]] = i;
+    return out;
+  }
+  
   template<typename T, typename I>
   auto reorder(const std::vector<T>& values, const std::vector<I>& order)
   {
