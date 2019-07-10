@@ -383,7 +383,7 @@ namespace helper
   }
   
   template<typename T, typename I>
-  auto reorderSource(const std::vector<T>& values, const std::vector<I>& order)
+  auto reorderSrc(const std::vector<T>& values, const std::vector<I>& order)
   {
     assert(values.size() == order.size());
     std::vector<T> out(values.size());
