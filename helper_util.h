@@ -383,14 +383,15 @@ namespace helper
   }
   
   template<typename T, typename I>
-  auto reorderSrc(const std::vector<T>& values, const std::vector<I>& order)
+  auto reorderDestInv(const std::vector<T>& values, const std::vector<I>& order)
   {
     assert(values.size() == order.size());
     std::vector<T> out(values.size());
     for(size_t i=0; i<values.size(); i++)
       {
 	assert(order[i]<values.size());
-	out[i] = values[order[i]];
+	//out[i] = values[order[i]];
+	out[i] = order[values[i]];
       }
     return out;
   }
