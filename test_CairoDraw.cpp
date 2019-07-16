@@ -13,13 +13,25 @@ int main(int argc, const char** argv)
     auto cr = cd.get();
     cairo_set_source_rgba(cr, 1., 0., 0., 1.);
     cairo_rectangle(cr, 10, 13, 24, 28);
-    cairo_fill(cr);
+
     
-    cd.showPage();
-    
-    cairo_set_source_rgba(cr, 0., 1., 0., 1.);
-    cairo_rectangle(cr, 10, 13, 24, 28);
+    std::cout << cairo_in_fill(cr, 20, 20) << " " <<  cairo_in_fill(cr, 10, 10)<< std::endl;
     cairo_fill(cr);
+
+    std::cout << cairo_in_fill(cr, 20, 20) << " " <<  cairo_in_fill(cr, 10, 10)<< std::endl;
+
+    cairo_move_to(cr, 0, 0);
+    cairo_set_line_width(cr, 2);
+    cairo_set_source_rgba(cr, 0, 0, 0, 1);
+    cairo_line_to(cr, 50, 50);
+    std::cout << cairo_in_stroke(cr, 20, 20) << " " <<  cairo_in_fill(cr, 10, 11)<< " " << cairo_in_fill(cr, 10, 15) << std::endl;
+    cairo_stroke(cr);
+    
+    // cd.showPage();
+    
+    // cairo_set_source_rgba(cr, 0., 1., 0., 1.);
+    // cairo_rectangle(cr, 10, 13, 24, 28);
+    // cairo_fill(cr);
     
     cd.writePDF("huhu.pdf");
     

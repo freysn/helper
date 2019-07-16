@@ -18,7 +18,7 @@ endif
 CXX += -DNO_FS3D
 
 
-all: som
+all: testCairoDraw
 
 .PHONY: img2raw conv_raw testCairoDraw conv_dmp2raw
 
