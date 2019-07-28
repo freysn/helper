@@ -310,7 +310,7 @@ bool isWithinBounds(const I3& v, const I3B& volDim)
   bool iiWithinBounds(const I2& v, const I2& volDim, const I2 begin=I2(0,0))
 {
   return
-    v.x >= begin.x && v.x < volDim.x && v.y >= begin.y && v.y < volDim.y;
+    v.x >= begin.x && v.x < begin.x+volDim.x && v.y >= begin.y && v.y < begin.y+volDim.y;
 }
 
 

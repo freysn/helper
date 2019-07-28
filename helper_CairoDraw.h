@@ -254,10 +254,12 @@ namespace helper
       }
 
       template<typename T, typename IV, typename FV>
-	static void drawImg(cairo_t* cr, cairo_format_t format,
+	static bool drawImg(cairo_t* cr, cairo_format_t format,
 			    const std::vector<T>& img, IV imgDim,
 			  FV off,
-			  double scaleImg=1.)
+			    double scaleImg=1.,
+			    F2 pointerPos=F2(std::numeric_limits<typename F2::x>::max(), 
+					     std::numeric_limits<typename F2::x>::max()))
       {
 	cairo_save(cr);
 	//cairo_format_t format = CAIRO_FORMAT_ARGB32;
@@ -310,6 +312,7 @@ namespace helper
 	//int w = cairo_image_surface_get_width (imgSurf);
 	//int h = cairo_image_surface_get_height (imgSurf);
     
+	const bool hit =  cairo_in_clip(cr, pointerPos.x, pointerPos.y);
 	cairo_paint(cr);	
 	cairo_surface_flush(imgSurf);	
 	
@@ -347,6 +350,7 @@ namespace helper
 	
 	
        //std::cout << "finished draw\n";
+	return hit;
       }
 
       template<typename I4, typename F>
