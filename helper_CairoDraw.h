@@ -258,8 +258,8 @@ namespace helper
 			    const std::vector<T>& img, IV imgDim,
 			  FV off,
 			    double scaleImg=1.,
-			    F2 pointerPos=F2(std::numeric_limits<typename F2::x>::max(), 
-					     std::numeric_limits<typename F2::x>::max()))
+			    F2 pointerPos=F2(/*std::numeric_limits<typename F2::x>::max()*/1.e20, 
+					     /*std::numeric_limits<typename F2::x>::max())*/1.e20))
       {
 	cairo_save(cr);
 	//cairo_format_t format = CAIRO_FORMAT_ARGB32;
