@@ -3,6 +3,10 @@
 
 #include <chrono>
 #include <cassert>
+#include <ctime>   // localtime
+#include <sstream> // stringstream
+#include <iomanip> // put_time
+#include <string>  // string
 
 namespace helper
 {
@@ -10,6 +14,18 @@ namespace helper
   {
     typedef std::chrono::time_point<std::chrono::system_clock> timePoint_t;
   public:
+    
+    static std::string dateAndTime()
+    {
+      
+      auto in_time_t = std::chrono::system_clock::to_time_t(now());
+
+      std::stringstream ss;
+      ss << std::put_time(std::localtime(&in_time_t), "%Y-%m-%d_%H-%M-%S");
+      return ss.str();
+    }
+
+
     ChronoTimer()
       {
 	start();
