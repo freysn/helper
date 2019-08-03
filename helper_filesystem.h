@@ -58,9 +58,14 @@ namespace helper
     return f.good();
   }
   
+  auto fileExtensionPos(std::string fn)
+  {
+    return fn.find_last_of(".");
+  }
+  
   std::string fileExtension(std::string fn)
   {
-    return fn.substr(fn.find_last_of("."));
+    return fn.substr(fileExtensionPos(fn));
   }
   
   std::string fileName(std::string fn)
@@ -70,6 +75,13 @@ namespace helper
       return fn;
     else      
       return fn.substr(pos+1);
+  }
+  
+  std::string fileNameNoExtension(std::string fn)
+  {
+    fn = fileName(fn);    
+    
+    return fn.substr(0, fileExtensionPos(fn));
   }
   
   
