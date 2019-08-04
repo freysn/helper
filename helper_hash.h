@@ -6,11 +6,18 @@
 
 namespace helper
 {
+  inline void hash_combine_seeds(std::size_t& seed, const size_t& seed2)
+  {
+    //std::hash<T> hasher;
+    seed ^= seed2 + 0x9e3779b9 + (seed<<6) + (seed>>2);
+  }
+  
   template <class T>
   inline void hash_combine(std::size_t& seed, const T& v)
   {
     //std::hash<T> hasher;
-    seed ^= std::hash<T>()(v) + 0x9e3779b9 + (seed<<6) + (seed>>2);
+    //seed ^= std::hash<T>()(v) + 0x9e3779b9 + (seed<<6) + (seed>>2);
+    hash_combine_seeds(seed, static_cast<size_t>(std::hash<T>()(v)));
   }
 
   template <class T>
@@ -41,6 +48,27 @@ namespace helper
     typedef decltype(*b) T;
     std::for_each(b, e, [&seed](T a) {hash_combine(seed, a);});
 
+    return seed;
+  }
+  
+  template <class T_it>
+  inline size_t hash_range_parallel(T_it b, T_it e)
+  {
+    const size_t nElems = e-b;
+    
+    const size_t nChunks = std::min(static_cast<size_t>(omp_get_max_threads()*8), nElems);
+    const size_t chunkSize = iDivUp(nElems, nChunks);
+    assert(chunkSize > 0);
+    
+    std::vector<size_t> hashes(nChunks);
+    
+#pragma omp parallel for
+    for(size_t i=0; i<nChunks; i++)
+      hashes[i] = hash_range(std::min(b+i*chunkSize,e), std::min(b+(i+1)*chunkSize,e));
+    
+    size_t seed=1337;
+    for(const auto & e : hashes)
+      hash_combine_seeds(seed, e);
     return seed;
   }
   
