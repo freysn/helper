@@ -1,12 +1,21 @@
 #ifndef __HELPER_ASSERT__
 #define __HELPER_ASSERT__
 
+#include <sstream>
 namespace helper
   {
-    inline void _assert(const char* expression, const char* file, int line, std::string message="")
+    template<typename M>
+    inline void _assert(const char* expression, const char* file, int line, M message)
     {
-      fprintf(stderr, "Assertion '%s' failed, file '%s' line '%d', %s.", expression, file, line, message.c_str());
+      std::stringstream ss;
+      ss << "<|" << message << "|>";
+      fprintf(stderr, "Assertion '%s' failed, file '%s' line '%d', %s.", expression, file, line, ss.str().c_str());
       abort();
+    }
+    
+    inline void _assert(const char* expression, const char* file, int line)
+    {
+      _assert(expression, file, line, std::string(""));
     }
  
 #ifdef NDEBUG
