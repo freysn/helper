@@ -395,6 +395,23 @@ namespace helper
       }
     return out;
   }
+  
+  
+  template<typename F=double, typename T_it>
+  F harmonicMean_be(const T_it begin, const T_it end, const F minValue=1.e-8)
+  {
+    const size_t n = end-begin;
+    F sum=0.;
+    for(auto it=begin; it != end; it++)
+      sum += 1./std::max(minValue, static_cast<F>(*it));
+    return n/sum;
+  }
+  
+  template<typename F=double, typename T>
+  F harmonicMean(const T& vec, F minValue=1.e-8)
+  {
+    return harmonicMean_be(vec.begin(), vec.end(), minValue);
+  }
     
 };
 
