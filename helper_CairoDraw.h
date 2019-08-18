@@ -12,6 +12,7 @@
 #include <iostream>
 #include <tuple>
 #include <algorithm>
+#include "helper/helper_assert.h"
 
 
 namespace helper
@@ -154,8 +155,9 @@ namespace helper
 	
 	auto p = cairo_image_surface_get_data(surfacePDF);
 	const auto stride = cairo_image_surface_get_stride (surfacePDF);
-	assert(cairo_image_surface_get_width (surfacePDF) == dim.x);
-	assert(cairo_image_surface_get_height (surfacePDF) == dim.y);
+	hassertm(cairo_image_surface_get_width (surfacePDF) == dim.x, std::to_string(cairo_image_surface_get_width (surfacePDF)) + "==" + std::to_string( dim.x));
+	hassertm(cairo_image_surface_get_height (surfacePDF) == dim.y, std::to_string(cairo_image_surface_get_height (surfacePDF)) + "==" + std::to_string( dim.y));
+	//assert(cairo_image_surface_get_height (surfacePDF) == dim.y);
 	
 	assert(p != 0);
 	size_t nChannels = 1;
