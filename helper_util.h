@@ -318,19 +318,20 @@ namespace helper
     return (a % b != 0) ? (a / b + 1) : (a / b); 
   }
   
-  template<typename T, typename DIM>
-  auto crop3(const std::vector<T>& buf, DIM dim, DIM off, DIM outDim, size_t nChannels=1)
+  template<typename DIM>
+  auto crop3_outDim(DIM dim, DIM off, DIM outDim)
   {
-   
-    // assert(off.x+outDim.x <= dim.x);
-    // assert(off.y+outDim.y <= dim.y);
-    // assert(off.z+outDim.z <= dim.z);
-    
     assert(off.x<= dim.x);
     assert(off.y<= dim.y);
     assert(off.z<= dim.z);
     
-    outDim = minv(dim-off, outDim);
+    return minv(dim-off, outDim);
+  }
+  
+  template<typename T, typename DIM>
+  auto crop3(const std::vector<T>& buf, DIM dim, DIM off, DIM outDim, size_t nChannels=1)
+  {   
+    outDim = crop3_outDim(dim, off, outDim);
     
     std::vector<T> buf2(helper::iii2n(outDim));
     for(size_t z=0; z<outDim.z; z++)
@@ -342,6 +343,17 @@ namespace helper
     
     return std::make_tuple(buf2, outDim);
   }
+  
+  template<typename T, typename DIM>
+  auto copy2(std::vector<T>& imgDataCrop, DIM outDim, const std::vector<T>& imgDataCropSingle, DIM cropDim, DIM offset)
+  {
+    for(size_t y=0; y<cropDim.y; y++)
+      std::copy(imgDataCropSingle.begin()+cropDim.x*y,
+		imgDataCropSingle.begin()+cropDim.x*(y+1),
+		imgDataCrop.begin()+helper::ii2i(DIM(offset.x, offset.y+y,0,0), outDim));
+  }
+  
+  
   
   template<typename K, typename V, typename COMP>
   void sortKeysValues(std::vector<K>& keys, std::vector<V>& values, COMP comp)
