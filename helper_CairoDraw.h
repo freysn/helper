@@ -314,7 +314,10 @@ namespace helper
 	//int w = cairo_image_surface_get_width (imgSurf);
 	//int h = cairo_image_surface_get_height (imgSurf);
     
-	const bool hit =  cairo_in_clip(cr, pointerPos.x, pointerPos.y);
+	//const bool hit =
+	cairo_in_clip(cr, pointerPos.x, pointerPos.y);
+
+	  
 	cairo_paint(cr);	
 	cairo_surface_flush(imgSurf);	
 	
@@ -352,7 +355,12 @@ namespace helper
 	
 	
        //std::cout << "finished draw\n";
-	return hit;
+	//return hit;
+
+	return
+	  pointerPos.x > off.x && pointerPos.y > off.y
+	  && pointerPos.x < off.x+scaleImg*imgDim.x
+	  && pointerPos.y < off.y+scaleImg*imgDim.y;
       }
 
       template<typename I4, typename F>
