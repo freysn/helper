@@ -329,7 +329,7 @@ namespace helper
   }
   
   template<typename T, typename DIM>
-  auto crop3(const std::vector<T>& buf, DIM dim, DIM off, DIM outDim, size_t nChannels=1)
+  auto crop3(const T* buf, DIM dim, DIM off, DIM outDim, size_t nChannels=1)
   {   
     outDim = crop3_outDim(dim, off, outDim);
     
@@ -342,6 +342,12 @@ namespace helper
 	      buf[c+nChannels*(off.x+x+dim.x*(off.y+y+dim.y*z))];
     
     return std::make_tuple(buf2, outDim);
+  }
+
+  template<typename T, typename DIM>
+  auto crop3(const std::vector<T>& buf, DIM dim, DIM off, DIM outDim, size_t nChannels=1)
+  {   
+    return crop3(&buf[0], dim, off, outDim, nChannels);
   }
   
   template<typename T, typename DIM>
