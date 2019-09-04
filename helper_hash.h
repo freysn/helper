@@ -39,17 +39,25 @@ namespace helper
 
 
 
+
+  template <class T_it>
+  inline void hash_combine_range(std::size_t& seed, T_it b, T_it e)
+  {    
+    typedef decltype(*b) T;
+    std::for_each(b, e, [&seed](T a) {hash_combine(seed, a);});    
+  }
+
   template <class T_it>
   inline size_t hash_range(T_it b, T_it e)    
   {
     size_t seed=1337;
     // for_each guarantees order
-
-    typedef decltype(*b) T;
-    std::for_each(b, e, [&seed](T a) {hash_combine(seed, a);});
+    
+    hash_combine_range(seed, b,e);
 
     return seed;
   }
+
   
   template <class T_it>
   inline size_t hash_range_parallel(T_it b, T_it e)
