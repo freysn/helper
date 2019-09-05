@@ -37,6 +37,13 @@ namespace helper
     hash_combine(seed, v.z);   
   }
 
+  template <class T>
+  inline void hash_combine(std::size_t& seed, const V2<T>& v)
+  {
+    hash_combine(seed, v.x);
+    hash_combine(seed, v.y);
+  }
+
 
 
 
