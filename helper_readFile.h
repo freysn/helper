@@ -50,7 +50,7 @@ namespace helper
   
 
   template<typename T>
-  bool readFile2(const std::vector<std::vector<T>>& vecv,
+  bool readFile2(std::vector<std::vector<T>>& vecv,
 		 const std::string fname)
   {
     std::cout << "READ FILE VECTOR OF VECTORS\n";
