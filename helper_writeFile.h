@@ -64,8 +64,9 @@ bool writeFile(const std::vector<T>& vec,
 	  const bool app = (!first) || append;
 	  const size_t n = vec.size();
 	  if(!writeFile(&n, 1, filenameOut, app))
-	    return false;	  
+	    return false;
 	}
+	first = false;
 
 	if(!writeFile(vec, filenameOut, true))
 	  return false;
