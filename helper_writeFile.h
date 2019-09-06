@@ -52,6 +52,30 @@ bool writeFile(const std::vector<T>& vec,
   return writeFile((T*)&vec[0], vec.size(), filenameOut, append);
 }
 
+  template<typename T>
+  bool writeFile(const std::vector<std::vector<T>>& vecv,
+		 std::string filenameOut, bool append=false)
+  {
+    std::cout << "WRITE FILE VECTOR OF VECTORS\n";
+    bool first = true;
+    for(const auto & vec : vecv)
+      {
+	{
+	  const bool app = (!first) || append;
+	  const size_t n = vec.size();
+	  if(!writeFile(&n, 1, filenameOut, app))
+	    return false;	  
+	}
+
+	if(!writeFile(vec, filenameOut, true))
+	  return false;
+      }
+    return true;
+  }
+
+
+  
+
 template<typename O, typename T, typename S>
   bool writeFileConv(T* ptr, size_t nElements,
                      S filenameOut,

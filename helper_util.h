@@ -317,6 +317,36 @@ namespace helper
     static_assert(std::is_integral<T>::value, "Integral required.");
     return (a % b != 0) ? (a / b + 1) : (a / b); 
   }
+
+
+  template<typename T>
+  auto range2_be(const V2<T>& b, const V2<T>& e)
+  {
+    static_assert(std::is_integral<T>::value, "Integral required.");
+    assert(b.x < e.x);
+    assert(b.y < e.y);
+
+    const auto dim = e-b;
+    
+    std::vector<V2<T>> out(ii2n(dim));
+    
+    for(size_t i=0; i<out.size(); i++)
+      out[i] = b+i2ii(i, dim);
+    
+    return out;
+  }
+
+  template<typename T>
+  auto range2_n(const V2<T>& n)
+  {
+    return range2_be(V2<T>(0,0), n);
+  }
+
+  template<typename T>
+  auto range2_bn(const V2<T> b, const V2<T>& n)
+  {
+    return range2_be(b, b+n);
+  }
   
   template<typename DIM>
   auto crop3_outDim(DIM dim, DIM off, DIM outDim)
