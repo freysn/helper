@@ -243,7 +243,7 @@ namespace helper
 					     &dim.x,
 					     &dim.y);
 
-	std::cout << "from: " << from << " dim: " << dim << std::endl;
+	std::cout << "write " << fname << " , from: " << from << " dim: " << dim << std::endl;
 
 	cairo_surface_t* surfacePDF = cairo_pdf_surface_create(fname.c_str(),
 							      dim.x+2*border.x, dim.y+2*border.y);
