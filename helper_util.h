@@ -460,7 +460,7 @@ namespace helper
   {
     return harmonicMean_be(vec.begin(), vec.end(), minValue);
   }
-    
+
 };
 
 
