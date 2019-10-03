@@ -294,6 +294,14 @@ template<typename I3A, typename I3B>
     return o;
   }
 
+template<typename I3, typename I3B>
+bool isWithinBounds2(const I3& v, const I3B& volDim)
+{
+  return
+    v.x >= 0 && v.x < volDim.x
+    && v.y >= 0 && v.y < volDim.y;
+}
+
   template<typename I3, typename I3B>
 bool isWithinBounds(const I3& v, const I3B& volDim)
 {
