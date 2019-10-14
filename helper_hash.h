@@ -3,6 +3,7 @@
 
 #include <functional>
 #include <utility>
+#include "helper/helper_omp.h"
 
 namespace helper
 {
@@ -71,7 +72,7 @@ namespace helper
   {
     const size_t nElems = e-b;
     
-    const size_t nChunks = std::min(static_cast<size_t>(omp_get_max_threads()*8), nElems);
+    const size_t nChunks = std::min(static_cast<size_t>(helper::getMaxNThreadsOMP()*8), nElems);
     const size_t chunkSize = iDivUp(nElems, nChunks);
     assert(chunkSize > 0);
     
