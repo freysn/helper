@@ -39,7 +39,8 @@ namespace helper
 #ifdef NDEBUG
 #define hassert(EXPRESSION) ((void)0)
 #define hassertm(EXPRESSION,MESSAGE) ((void)0)
-#define hassertm(EXPRESSION,MESSAGE0, MESSAGE1) ((void)0)
+#define hassertm2(EXPRESSION,MESSAGE0, MESSAGE1) ((void)0)
+#define hassertm3(EXPRESSION,MESSAGE0, MESSAGE1, MESSAGE2) ((void)0)
 #else
 #define hassert(EXPRESSION) ((EXPRESSION) ? (void)0 : helper::_assert(#EXPRESSION, __FILE__, __LINE__))
 #define hassertm(EXPRESSION,MESSAGE) ((EXPRESSION) ? (void)0 : helper::_assert(#EXPRESSION, __FILE__, __LINE__, MESSAGE))
