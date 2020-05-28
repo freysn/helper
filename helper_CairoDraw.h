@@ -3,6 +3,7 @@
 
 #include <cairo/cairo.h>
 #include <cairo/cairo-pdf.h>
+//#include <cairo/cairo_png_surface.h>
 #include <cassert>
 #include <vector>
 #include <cstring>
@@ -13,7 +14,8 @@
 #include <tuple>
 #include <algorithm>
 #include "helper/helper_assert.h"
-
+#include "helper/helper_idx.h"
+#include "helper/helper_util.h"
 
 namespace helper
 {
@@ -192,22 +194,49 @@ namespace helper
 	return std::make_tuple(img, std::get<1>(rslt), std::get<2>(rslt));
       }
 
-      std::pair<unsigned char*,F2> getData()
+      std::tuple<unsigned char*,V2<int>, int> getData()
       {
 	cairo_surface_flush(surface);	
 	
-	F2 from;
-	F2 dim;
+	// F2 from;
+	// F2 dim;
 	
-	assert(from.x == 0 && from.y == 0);
+	// assert(from.x == 0 && from.y == 0);
 	
-	cairo_recording_surface_ink_extents (surface,
-					     &from.x,
-					     &from.y,
-					     &dim.x,
-					     &dim.y);
+	// cairo_recording_surface_ink_extents (surface,
+	// 				     &from.x,
+	// 				     &from.y,
+	// 				     &dim.x,
+	// 				     &dim.y);
+
+	return std::make_tuple
+	  (cairo_image_surface_get_data(surface),			       
+	   V2<int>(cairo_image_surface_get_width(surface),
+		   cairo_image_surface_get_height(surface)),
+	   cairo_image_surface_get_stride(surface));
+      }
+
+      template<typename F=double>
+      auto getDataRGBAf()
+      {
+	unsigned char* data;
+	V2<int> dim;
+	int stride;
+	std::tie(data, dim, stride) = getData();
 	
-	return std::make_pair(cairo_image_surface_get_data(surface), dim);	
+
+	auto data_cairo4 = reinterpret_cast<V4<uint8_t>*>(data);
+
+	using RO=V4<F>;
+	std::vector<RO> to(helper::ii2n(dim));
+		
+	for(const auto & p : helper::range2_n(dim))
+	  {
+	    const auto i = p.x+(stride/4)*p.y;
+	    const auto rgba = cairo42rgba(data_cairo4[i]);
+	    to[helper::ii2i(p, dim)]=RO(rgba)/255.;
+	  }
+	return std::make_tuple(to, dim);
       }
 
       void finish()
@@ -225,10 +254,45 @@ namespace helper
 	surface = 0;
       }
 
-      void writePNG(const std::string fname)
+      template<typename COL=V4<double>>
+      void writePNG(const std::string fname, const COL background=COL(0., 0., 0., 0.))
       {
-	cairo_surface_write_to_png (surface,
-				    fname.c_str());
+	F2 border=F2(0, 0);
+	// cairo_surface_write_to_png (surface,
+	// 			    fname.c_str());
+
+	F2 from;
+	F2 dim;
+    
+	cairo_recording_surface_ink_extents (surface,
+					     &from.x,
+					     &from.y,
+					     &dim.x,
+					     &dim.y);
+
+	std::cout << "write " << fname << " , from: " << from << " dim: " << dim << std::endl;
+
+	cairo_surface_t* surfacePNG =
+	  cairo_image_surface_create(CAIRO_FORMAT_ARGB32,
+				     dim.x+2*border.x, dim.y+2*border.y);
+	
+	cairo_t* crPNG = cairo_create(surfacePNG);
+
+	//
+	// set white background
+	//
+	cairo_save(crPNG);
+	cairo_set_source_rgba(crPNG, 1, 1, 1, 1);
+	cairo_paint(crPNG);
+	cairo_restore(crPNG);
+
+	
+	cairo_set_source_surface(crPNG, surface, -from.x+border.x, -from.y+border.y);
+	cairo_paint(crPNG);
+	cairo_surface_write_to_png (surfacePNG, fname.c_str());
+	cairo_surface_finish(surfacePNG);
+	cairo_destroy(crPNG);
+	cairo_surface_destroy(surfacePNG);	
       }
 
 
@@ -255,14 +319,17 @@ namespace helper
 	cairo_surface_destroy(surfacePDF);	
       }
 
-      template<typename T, typename IV, typename FV>
+      template<typename FV=V2<double>, typename TV, typename IV>
 	static bool drawImg(cairo_t* cr, cairo_format_t format,
-			    const std::vector<T>& img, IV imgDim,
-			  FV off,
+			    const TV& img, IV imgDim,
+			    FV off=FV(),
 			    double scaleImg=1.,
 			    F2 pointerPos=F2(/*std::numeric_limits<typename F2::x>::max()*/1.e20, 
 					     /*std::numeric_limits<typename F2::x>::max())*/1.e20))
       {
+	typedef typename std::remove_const   
+	  <typename std::remove_reference<decltype(img[0])>::type>::type T;
+	
 	cairo_save(cr);
 	//cairo_format_t format = CAIRO_FORMAT_ARGB32;
 	//if(nChannels==3)
@@ -433,7 +500,8 @@ namespace helper
 	  [alpha](double v)
 	  {
 	    v /= alpha;
-	    return std::clamp(v, 0., 255.);
+	    //return std::clamp(v, 0., 255.);
+	    return std::max(0., std::min(v, 255.));
 	  };
 
 	rgba.x = dePreMulitply(rgba.x);
