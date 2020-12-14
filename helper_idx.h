@@ -5,6 +5,8 @@
 #include <cstddef>
 #include <cassert>
 #include <vector>
+#include <algorithm>
+#include <tuple>
 
 namespace helper
 {

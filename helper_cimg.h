@@ -4,14 +4,22 @@
 #include <cstdlib>
 #define cimg_display 0
 #define cimg_use_png
+
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-parameter"
+#pragma GCC diagnostic ignored "-Wall"
+#pragma GCC diagnostic ignored "-Wnull-pointer-arithmetic"
 #include <CImg.h>
+#pragma GCC diagnostic pop
+
 #include <string>
 #include <vector>
 #include <cassert>
 #include <iostream>
-#include "helper/volData/vec.h"
+#include <volData/vec.h>
 #include <ostream>
 #include "helper/helper_idx.h"
+#include "helper/helper_assert.h"
 
 namespace helper
 {
@@ -22,7 +30,7 @@ namespace helper
 	       const size_t y,
 	       const size_t z,
 	       const size_t c,
-	       const I3& dim, const size_t nChannels)
+	       const I3& dim, const size_t /*nChannels*/)
   {
     return c*dim.x*dim.y*dim.z+z*dim.x*dim.y+y*dim.x+x;
   }
@@ -75,27 +83,6 @@ namespace helper
 	      dataOut[c+nChannels*(x+outDim.x*(y+outDim.y*z))] =
 		out.data()[cimgIdx(x,y,z,c,outDim, nChannels)];
     }
-  
-  //
-  // TODO: THIS HASN'T WORKED ... small multiples has a working implementation
-  //
-  // template<typename I3>
-  // void cimgCrop(unsigned char* dataOut, unsigned char* data, 
-  // 		const I3& dim,
-  // 		const I3& from, const I3& outDim, 
-  // 		int nChannels, unsigned char flip=0)
-  // {
-  //   const auto to = from + outDim;
-  //   auto out = cimgConvert(data, dim, nChannels, flip);
-  //   out.crop(from.x, from.y, from.z, to.x, to.y, to.z);
-
-  //   for(size_t z=0; z<outDim.z; z++)
-  //     for(size_t y=0; y<outDim.y; y++)
-  // 	for(size_t x=0; x<outDim.x; x++)
-  // 	  for(int c=0; c<nChannels; c++)
-  // 	    dataOut[c+nChannels*(x+outDim.x*(y+outDim.y*z))] =
-  // 	      out.data()[cimgIdx(x,y,z,c,outDim, nChannels)];
-  // }
   
   
 template<typename I3>
@@ -154,33 +141,6 @@ void cimgWriteNorm(std::string fname, TV data_in, const I3& dim,
   cimgWrite(fname, &data[0], dim, nChannels, flip, outDim);
 }
 
-
-  template<typename I3>
-  void cimgWriteNorm(std::string fname, std::vector<bool> data_in, const I3& dim, 
-		     int nChannels, unsigned char flip=0, const I3& outDim=make_vec<I3>(0,0,0))
-  {
-    std::vector<double> data(data_in.begin(), data_in.end());
-    cimgWriteNorm(fname, data, dim, nChannels, flip, outDim);
-  }
-
-    template<typename TV, typename I3>
-void cimgWriteNormRGB(std::string fname, TV data_in, const I3& dim, 
-		      unsigned char flip=0, const I3& outDim=make_vec<I3>(0,0,0))
-    {
-      const size_t nChannels = 3;
-      typedef decltype(data_in[0][0]) T;
-      std::vector<T> data(data_in.size()*nChannels);
-      for(uint64_t i=0; i<data_in.size(); i++)
-	{
-	  data[i*nChannels+0] = data_in[i].x;
-	  data[i*nChannels+1] = data_in[i].y;
-	  data[i*nChannels+2] = data_in[i].z;
-	}
-  
-      cimgWriteNorm(fname, data, dim, nChannels, flip, outDim);
-  
-    }
-
     template<typename T, typename I3>
     T cimgWriteNormalizeScalar(std::string fname, std::vector<T> data, const I3& dim, unsigned char flip=0, const I3& outDim=make_vec<I3>(0,0,0))
 {
@@ -195,9 +155,9 @@ void cimgWriteNormRGB(std::string fname, TV data_in, const I3& dim,
   return maxV;
 }
 
-    template<typename VT, typename I3>
-void cimgWriteNormRGBA(std::string fname, std::vector<VT> dataVec, const I3& dim, 
-		       unsigned char flip=0, const I3& outDim=make_vec<I3>(0,0,0))
+  template<typename VT, typename I>
+void cimgWriteNormRGBA(std::string fname, std::vector<VT> dataVec, const V3<I>& dim, 
+		       unsigned char flip=0, const V3<I>& outDim=make_vec<V3<I>>(0,0,0))
 {
   const size_t nChannels = 4;
 
@@ -215,6 +175,12 @@ void cimgWriteNormRGBA(std::string fname, std::vector<VT> dataVec, const I3& dim
   
   cimgWriteNorm(fname, data, dim, nChannels, flip, outDim);
 }
+
+  template<typename VT, typename I>
+  void cimgWriteNormRGBA(std::string fname, std::vector<VT> dataVec, const V2<I>& dim)
+  {
+    cimgWriteNormRGBA(fname, dataVec, V3<I>(dim.x, dim.y, 1)); 
+  }
 
       template<typename VT, typename I3>
 void cimgWriteNormRGB(std::string fname, std::vector<VT> dataVec, const I3& dim, 
@@ -266,21 +232,17 @@ void cimgWriteRGB(std::string fname, std::vector<VT> dataVec, const I3& dim,
   cimgWrite(fname, data, dim, nChannels, flip, outDim);
 }
 
-  template<typename DATA, typename I3>
-  void cimgWriteRGBA(std::string fname, DATA dataVec, const I3& dim, 
+  template<typename VT, typename I3>
+  void cimgWriteRGBA(std::string fname, const VT& dataVec, const I3& dim, 
 		     unsigned char flip=0, const I3& outDim=make_vec<I3>(0,0,0))
 {
   const size_t nChannels = 4;
 
-  
-  //assert(!dataVec.empty());
-  
-  const size_t dataVec_size = dim.x*dim.y;
-  
   typedef decltype(dataVec[0].x) T;
-  std::vector<T> data(dataVec_size*nChannels);
+  const auto nElems = helper::iii2n(dim);
+  std::vector<T> data(nElems*nChannels);
 
-  for(uint64_t i=0; i<dataVec_size; i++)
+  for(uint64_t i=0; i<nElems; i++)
     {
       data[i*nChannels+0] = dataVec[i].x;
       data[i*nChannels+1] = dataVec[i].y;
@@ -311,10 +273,10 @@ template<typename T, typename I3>
   data.resize(volDim.x*volDim.y*volDim.z*nChannels);
 
   size_t idx =0;
-  for(size_t z=0; z<volDim.z; z++)
-    for(size_t y=0; y<volDim.y; y++)
-      for(size_t x=0; x<volDim.x; x++)
-	for(size_t c=0; c<nChannels; c++)
+  for(size_t z=0; z<(size_t)volDim.z; z++)
+    for(size_t y=0; y<(size_t)volDim.y; y++)
+      for(size_t x=0; x<(size_t)volDim.x; x++)
+	for(size_t c=0; c<(size_t)nChannels; c++)
 	  {
 	    data[idx] = img(x,y,z,c);
 	    bool allChannelsEqual = true;
@@ -330,17 +292,7 @@ template<typename T, typename I3>
 	      std::cout << (int)img(x,y,z,0) << " " << (int)img(x,y,z,1) << " " << (int)img(x,y,z,2) << std::endl;
 	    */
 
-	    const bool grayTest = (!forceGray || allChannelsEqual);
-#ifndef NDEBUG
-	    if(!grayTest)
-	      std::cout << __PRETTY_FUNCTION__ << " " << x << " " << y << " " << z  << " " << c << " " << img.spectrum() << std::endl;
-#endif
-	    assert(grayTest);
-	    
-	    /*
-	    assert(img.spectrum()==1 || (img(x,y,z,0)==(img(x,y,z,1))
-					 && img(x,y,z,0)==(img(x,y,z,2))));
-	    */
+	    hassert(!forceGray || allChannelsEqual);
 	    idx++;
 	  }
 }

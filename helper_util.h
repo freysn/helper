@@ -8,6 +8,8 @@
 #include <vector>
 #include <random>
 #include "helper/helper_idx.h"
+#include "helper/helper_assert.h"
+//#include "helper/helper_almostEquals.h"
 
 namespace helper
 {
@@ -152,20 +154,37 @@ namespace helper
   F eps()
   {
     //return std::numeric_limits<F>::epsilon();
-    return 1.e-15;
+    //return 1.e-15;
+    return 1.e-6;
   }
 
   template<typename F>
   #ifdef __CUDACC__
   __device__ __host__
   #endif
-  bool apprEq(const F a, const F b, const F epsf = helper::eps<F>())
+  bool apprEq(const F a, const F b, const F rel_tol=1.e-9, const F abs_tol=1.e-9)
   {
-    return (a+epsf >= b) && (b+epsf  >= a);
+    //return (a+epsf >= b) && (b+epsf  >= a);
+    //return almostEquals(a,b);    
+
+    // const auto d = std::abs(a-b);
+    // return d<=std::max(std::abs(a),std::abs(b))*epsf;
+
+    // def isclose(a, b, rel_tol=1e-09, abs_tol=0.0):
+    //   return abs(a-b) <= max(rel_tol * max(abs(a), abs(b)), abs_tol)
+
+    // const F rel_tol=1.e-9;
+    // const F abs_tol=1.e-9;
+    return std::abs(a-b) <= std::max(rel_tol * max(std::abs(a), std::abs(b)), abs_tol);
   }
 
+  template<typename F>
+  void hassert_norm(const F& e, const F epsf = helper::eps<F>())
+  {
+    hassertm(e >= -epsf && e <= 1.+epsf, e);
+  };
 
-    template<typename F>
+  template<typename F>
     void assert_norm(const V4<F>& e, const F epsf = helper::eps<F>())
   {
     assert(e.x >= -epsf && e.x <= 1.+epsf);
@@ -262,8 +281,56 @@ namespace helper
   template<typename T=std::vector<size_t>>
   T range_n(int64_t n)
   {
-    return range_bn<T>(0,n);
+    //return range_bn<T>(0,n);
+    T a(n);
+    std::iota(a.begin(), a.end(), 0);
+    return a;
   }
+
+  template<typename I=size_t>
+  struct RangeN
+  {
+    RangeN(const I n_in) :
+      n(n_in)
+    {}
+	
+    I operator[](const I& i) const
+    {
+      assert(i<n);
+      return i;
+    }
+
+    I size() const
+    {
+      return n;
+    }
+	
+    const I n;
+  };
+
+  template<typename IT>
+  struct RangeIt
+  {
+    RangeIt(const IT b_in, const IT e_in) :
+      b(b_in), e(e_in)
+    {}
+
+    template<typename I>
+    auto operator[](const I& i) const
+    {
+	
+      assert(i<e-b);
+      return b[i];
+    }
+
+    auto size() const
+    {
+      return e-b;
+    }
+	
+    const IT b;
+    const IT e;
+  };
   
   template<typename T=std::vector<size_t>>
   T rangeVec(int64_t n, int64_t start=0)
@@ -388,6 +455,17 @@ namespace helper
 		imgDataCropSingle.begin()+cropDim.x*(y+1),
 		imgDataCrop.begin()+helper::ii2i(DIM(offset.x, offset.y+y,0,0), outDim));
   }
+
+  template<typename T, typename DIM>
+  auto extract2(const std::vector<T>& img, DIM imgDim,  DIM cropDim/*, DIM offset=DIM()*/)
+  {
+    std::vector<T> crop(helper::ii2n(cropDim));
+    for(size_t y=0; y<cropDim.y; y++)
+      std::copy(img.begin()+imgDim.x*y,
+		img.begin()+imgDim.x*y+cropDim.x,
+		crop.begin()+y*cropDim.x);
+    return crop;
+  }
   
   
   
@@ -459,6 +537,58 @@ namespace helper
   F harmonicMean(const T& vec, F minValue=1.e-8)
   {
     return harmonicMean_be(vec.begin(), vec.end(), minValue);
+  }
+
+  template<typename I>
+  auto invertMap(const std::vector<I>& v)
+  {
+    static_assert(std::is_integral<I>::value, "Integral required.");
+    std::vector<I> o(v.size());
+
+#ifndef NDEBUG
+    {
+      std::vector<bool> m(v.size(), false);
+      for(const auto e : v)
+	{
+	  assert(e>=0 && e<v.size());
+	  assert(m[e]==false);
+	  m[e]=true;
+	}
+    }
+#endif
+
+    for(size_t i=0; i<v.size(); i++)
+      o[v[i]]=i;
+    return o;
+  }
+
+  template<typename D=double, typename T_it>
+  auto vectorMagnitude(const T_it begin, const T_it end)
+  {
+    static_assert(std::is_floating_point<D>::value, "only floating point input is supported");
+    
+    D s=0;
+    for(auto it=begin; it!=end; it++)
+      s+=(*it)*(*it);
+    assert(s>0);
+    return std::sqrt(s);
+  }
+
+  template<typename D=double, typename T_it>
+  D normalizeVector(T_it begin, T_it end)
+  {
+    D mag = vectorMagnitude<D>(begin, end);
+    for(auto it=begin; it!=end; it++)
+      (*it) /= mag;
+
+    return mag;
+  }
+
+  template<typename T>
+  bool hc_eq(size_t hc)
+  {
+    //std::cout << "HC_EQ " << hc << " " << typeid(T).hash_code() << std::endl;
+    return hc==typeid(T).hash_code();
   }
 
 };

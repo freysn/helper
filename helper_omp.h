@@ -1,7 +1,7 @@
 #ifndef __HELPER_OMP__
 #define __HELPER_OMP__
 
-
+#if 1
 namespace helper
 {
   size_t getMaxNThreadsOMP()
@@ -32,6 +32,6 @@ namespace helper
     #endif
   }
 }
-
+#endif
 
 #endif //__HELPER_OMP__

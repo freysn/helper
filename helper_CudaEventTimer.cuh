@@ -6,17 +6,13 @@
  */
 namespace helper
 {
-  template<bool startImmediately=false>
 class CudaEventTimer
 {
  public:
   CudaEventTimer()
     {
-      cudaEventCreateWithFlags(&startEvent, _flag);
-      cudaEventCreateWithFlags(&stopEvent, _flag);
-
-      if(startImmediately)
-	start();
+      cudaEventCreate(&startEvent);
+      cudaEventCreate(&stopEvent);
     }
 
   ~CudaEventTimer()
@@ -41,20 +37,10 @@ class CudaEventTimer
     //convert milliseconds to seconds
     return time*0.001f;
   }
-
-  float get_s()
-  {
-    return stopGetTime();
-  }
   
  private:
   cudaEvent_t startEvent;
   cudaEvent_t stopEvent;
-
-  const unsigned int _flag = cudaEventDefault;
-
-  //cudaEventBlockingSync;
-  //cudaEventDefault
 };
 }
 

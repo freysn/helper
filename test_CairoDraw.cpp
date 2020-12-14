@@ -1,85 +1,10 @@
 #define M_VEC
-#include "volData/vec.h"
-
 #include "helper_CairoDraw.h"
-
+#include "volData/vec.h"
 
 int main(int argc, const char** argv)
 {
-  {
-    helper::CairoDraw<V2<double>> cd(helper::cairoBackend_rec);
-    //helper::CairoMultiPagePDF cmp("huhu.pdf");
-    
-    auto cr = cd.get();
-    cairo_set_source_rgba(cr, 1., 0., 0., 1.);
-    cairo_rectangle(cr, 10, 13, 24, 28);
 
-    
-    std::cout << cairo_in_fill(cr, 20, 20) << " " <<  cairo_in_fill(cr, 10, 10)<< std::endl;
-    cairo_fill(cr);
-
-    std::cout << cairo_in_fill(cr, 20, 20) << " " <<  cairo_in_fill(cr, 10, 10)<< std::endl;
-
-    cairo_move_to(cr, 0, 0);
-    cairo_set_line_width(cr, 2);
-    cairo_set_source_rgba(cr, 0, 0, 0, 1);
-    cairo_line_to(cr, 50, 50);
-    std::cout << cairo_in_stroke(cr, 20, 20) << " " <<  cairo_in_fill(cr, 10, 11)<< " " << cairo_in_fill(cr, 10, 15) << std::endl;
-    cairo_stroke(cr);
-    
-    // cd.showPage();
-    
-    // cairo_set_source_rgba(cr, 0., 1., 0., 1.);
-    // cairo_rectangle(cr, 10, 13, 24, 28);
-    // cairo_fill(cr);
-    
-    cd.writePDF("huhu.pdf");
-    
-    // cmp(cd);
-    // cmp(cd);
-    // cmp(cd);
-    
-  }
-  
-  // {
-    
-    
-    
-  //   helper::CairoMultiPagePDF cmp("huhu2.pdf");  
-  //   helper::CairoDraw<V2<double>> cd(helper::cairoBackend_rec);
-  //   //helper::CairoDraw<V2<double>> cd2(helper::cairoBackend_rec);
-    
-    
-            
-  //   auto cr = cd.get();
-  //   cairo_set_source_rgba(cr, 1., 0., 0., 1.);
-  //   cairo_rectangle(cr, 10, 3, 24, 28);
-  //   cairo_fill(cr);      
-    
-  //   cmp(cd);
-  //   cmp(cd);
-    
-  //   if(true)
-  //     {
-    
-  //   cairo_set_line_width(cr, 2.);
-  //   cairo_set_source_rgba(cr, 0., 0., 0., 1.);
-  //   cairo_move_to(cr, 11, 4);
-  //   cairo_line_to(cr, 22, 23);
-  //   cairo_stroke(cr);
-
-  //   //cd.clear();
-    
-  //   cairo_set_source_rgba(cr, 0., 0., 1., 1.);
-  //   cairo_rectangle(cr, 10, 18, 24, 28);
-  //   cairo_fill(cr);      
-  //   cairo_surface_flush(cd.getSurface());	
-  //   cmp(cd);
-  //   cmp(cd);         
-  //     }
-  // }
-  
-  {
   const V2<int> dim(256, 256);
   helper::cairoOpts_t cairoOpts;
     cairoOpts.background_a = 0.;
@@ -100,96 +25,13 @@ int main(int argc, const char** argv)
 	// BGRA
 	img[x+y*dim.x] = CairoDraw_t::rgba2cairo4(V4<uint8_t>(x, y, 0, 255));
     
-    CairoDraw_t::drawImg(cr, CAIRO_FORMAT_ARGB32, img, dim, /*V2<int>(0,0)*/dim/2, 0.25);
+    CairoDraw_t::drawImg(cr, CAIRO_FORMAT_ARGB32, img, dim, V2<int>(0,0));
 
     cairo_set_line_width(cr, 2.);
     cairo_set_source_rgba(cr, 0., 0., 0., 1.);
     cairo_move_to(cr, 0, 0);
     cairo_line_to(cr, dim.x, dim.y);
     cairo_stroke(cr);
-    
-    
-    cd.showPage();
-    
-    
-    cairo_set_source_rgba(cr, 1., 0., 0., 1.);
-    cairo_rectangle(cr, 10, 13, 24, 28);
-    cairo_fill(cr);
-    
-    
-  }
-    
-    {
-    helper::CairoDraw<V2<double>> cd(helper::cairoBackend_rec);
-    auto cr = cd.get();
-    cairo_set_source_rgba(cr, 1., 0., 0., 1.);
-    cairo_rectangle(cr, 10, 13, 24, 28);
-    cairo_fill(cr);
-    cd.writePDF("test2.pdf", V2<double>(4,4));
-  }
-    
-    
-        
-    {
-      
-      
-      helper::CairoDraw<V2<double>> cd(helper::cairoBackend_rec);
-      auto cr = cd.get();
-      cairo_set_source_rgba(cr, 1., 0., 0., 1.);
-      cairo_rectangle(cr, 10, 13, 24, 28);
-      cairo_fill(cr);
-      
-      
-      //
-      //
-      //
-      /*
-      V2<double> from;
-      V2<double> dim;
-    
-      cairo_recording_surface_ink_extents (cd.getSurface(),
-					   &from.x,
-					   &from.y,
-					   &dim.x,
-					   &dim.y);
-
-      std::cout << "from: " << from << " dim: " << dim << std::endl;
-
-      cairo_surface_t* surfacePDF = cairo_pdf_surface_create("test3.pdf",
-							     dim.x, dim.y);
-      cairo_t* crPDF = cairo_create(surfacePDF);
-      
-      
-      
-      cairo_set_source_surface(crPDF, cd.getSurface(), 0, 0);      
-      cairo_paint(crPDF);
-      //cairo_surface_finish(surfacePDF);
-      cairo_show_page(crPDF);
-      
-      cairo_set_line_width(crPDF, 2.);
-      cairo_set_source_rgba(crPDF, 0., 0., 0., 1.);
-      cairo_move_to(crPDF, 0, 0);
-      cairo_line_to(crPDF, dim.x, dim.y);
-      cairo_stroke(crPDF);
-      
-      // cairo_set_source_surface(crPDF, cd.getSurface(), 0, 0);      
-      // cairo_paint(crPDF);
-      //cairo_surface_finish(surfacePDF);
-      cairo_show_page(crPDF);
-      
-      
-      
-      cairo_destroy(crPDF);
-      cairo_surface_destroy(surfacePDF);	
-      
-      */
-      
-      helper::CairoMultiPagePDF cmp("test4.pdf");
-      cmp(cd);
-      cmp(cd);
-      cmp(cd);
-      cmp(cd);
-    }
     
   return 0;
 }

@@ -1,9 +1,9 @@
+#ifndef NO_CMD
+
 #ifndef __HELPER_CMD__
 #define __HELPER_CMD__
 
 #include <algorithm>
-#include <vector>
-#include <cassert>
 
 namespace helper
 {
@@ -36,12 +36,11 @@ std::vector<std::string> cmd(const std::string command)
   {
     return cmd("ls " + fname);
   }
-  
-  std::vector<std::string> cmd_find(const std::string path, const std::string name)
-  {
-    return cmd("find " + path + "/ -iname \"" + name + "\"");
-  }
 }
 
 
 #endif //__HELPER_CMD__
+
+#else
+//#pragma message "running commands is not supported"
+#endif //NO_CMD

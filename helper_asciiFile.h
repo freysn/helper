@@ -4,7 +4,7 @@
 #include <fstream>
 
 #include <sstream>
-#include "volData/splitStr.h"
+#include "helper/helper_string.h"
 
 namespace helper
 {
@@ -71,30 +71,9 @@ namespace helper
       }
     return true;
   }
-
-      
-  template<typename T>
-  bool writeASCIIv(const std::vector<std::vector<T>>& v, const std::string& fname, bool append=false)
-  {
-    std::vector<std::string> lines;
-    for(const auto e : v)
-      {
-	std::stringstream ss;
-	bool first = true;
-	for(const auto i : e)
-	  {
-	    if(!first)
-	      ss << " ";
-	    ss << i;
-	    first = false;
-	  }
-	lines.push_back(ss.str());
-      }
-    return writeASCIIv(lines, fname, append);
-  }
   
 template<typename V>
-  bool readASCIIv(V& v, const std::string& fname)
+bool readASCIIv(V& v, const std::string& fname, bool trimNomitEmptyLines=false)
   {
     std::ifstream ifs(fname.c_str());
     if(!ifs.is_open())
@@ -102,20 +81,13 @@ template<typename V>
     std::string line;
     v.clear();
     while (std::getline(ifs, line))
-      v.push_back(line);      
-    return true;
-  }
-  
-  template<typename V>
-  bool readASCIIv_split(V& v, const std::string& fname, char delim=' ')
-  {
-    std::vector<std::string> lines;
-    if(!readASCIIv(lines, fname))
-      return false;    
-    
-    for(const auto & e : lines)
-      v.push_back(split(e, delim));
-    
+      {
+	if(trimNomitEmptyLines)
+	  trim(line);
+
+	if(trimNomitEmptyLines && line != std::string(""))
+	  v.push_back(line);
+      }
     return true;
   }
 };

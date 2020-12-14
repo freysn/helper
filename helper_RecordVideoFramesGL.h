@@ -22,15 +22,7 @@ class RecordVideoFramesGL
   void init(size_t width, size_t height, size_t maxNFrames, float fps)
   {
     _maxNFrames = maxNFrames;
-    struct
-    {
-      unsigned int x;
-      unsigned int y;
-    } res;
-    res.x = width;
-    res.y = height;
-    
-    setImgRes(res);
+    setImgRes(make_uint2(width, height));      
     _fps = fps;
     _timer.start();      
       clear();
@@ -41,11 +33,6 @@ class RecordVideoFramesGL
     {
       init(width, height, maxNFrames, fps);
     }
-
-  static size_t maxNFramesFromMem(size_t memInBytes, size_t width, size_t height)
-  {
-    return memInBytes / (4.*width*height);
-  }
 
   bool isRunning() const
   {
@@ -58,8 +45,7 @@ class RecordVideoFramesGL
     _running = false;
   }
 
-  template<typename DIM>
-  void setImgRes(DIM imgRes)
+  void setImgRes(uint2 imgRes)
   {
     _width = imgRes.x;
     _height = imgRes.y;
@@ -67,9 +53,7 @@ class RecordVideoFramesGL
     
     if(_data)
       delete [] _data;
-    const size_t nBytes = _stride*_maxNFrames;
-    std::cout << __PRETTY_FUNCTION__ << " record video tries to allocte " << nBytes << " bytes\n";
-    _data = new char[nBytes];
+    _data = new char[_stride*_maxNFrames];
     _cams.resize(_maxNFrames);
   }
 

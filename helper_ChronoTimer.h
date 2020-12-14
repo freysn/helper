@@ -3,10 +3,6 @@
 
 #include <chrono>
 #include <cassert>
-#include <ctime>   // localtime
-#include <sstream> // stringstream
-#include <iomanip> // put_time
-#include <string>  // string
 
 namespace helper
 {
@@ -14,18 +10,6 @@ namespace helper
   {
     typedef std::chrono::time_point<std::chrono::system_clock> timePoint_t;
   public:
-    
-    static std::string dateAndTime()
-    {
-      
-      auto in_time_t = std::chrono::system_clock::to_time_t(now());
-
-      std::stringstream ss;
-      ss << std::put_time(std::localtime(&in_time_t), "%Y-%m-%d_%H-%M-%S");
-      return ss.str();
-    }
-
-
     ChronoTimer()
       {
 	start();
@@ -56,45 +40,35 @@ namespace helper
 	return std::chrono::duration_cast<T>(tp_end-tp_start).count();
       }
 
-
-    double getTotal_s() const
+    double get_s() const
     {
-      assert(std::isfinite(acc_time));
       if(pauseActive)
 	return acc_time;
       else
-	return acc_time+get_s();
-    }
-
-    double get_s() const
-    {
-      assert(!pauseActive);
-      return get_us_t()/1.e6;
+	return acc_time+get_us_t()/1.e6;
     }
 
     double get_ms() const
     {
-      return
-	//acc_time*1.e3+
-	get_us_t()/1.e3;
+      if(pauseActive)
+	return acc_time*1.e3;
+      else
+	return acc_time*1.e3+get_us_t()/1.e3;
     }
 
     void pause()
     {
       assert(!pauseActive);
-      assert(std::isfinite(acc_time));
-      acc_time += get_s();
-      assert(std::isfinite(acc_time));
-      pauseActive=true;
-      //init_start();
+      acc_time = get_s();
+      pauseActive=true;   
+      init_start();
     }
 
     void unpause()
     {
-      assert(std::isfinite(acc_time));
       assert(pauseActive);
       pauseActive=false;
-      //assert(acc_time > 0.);
+      assert(acc_time >= 0.);
       init_start();
     }
  

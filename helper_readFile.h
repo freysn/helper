@@ -16,7 +16,7 @@ namespace helper
 {
 
   template<typename V>
-    size_t readFile2(std::vector<V>& buf, std::string volumeFileName, size_t offsetElems=0, size_t nElems=std::numeric_limits<size_t>::max())
+  bool readFile2(std::vector<V>& buf, std::string volumeFileName, size_t offsetElems=0, size_t nElems=std::numeric_limits<size_t>::max())
     {
 #ifdef VERBOSE
       std::cout << "Open File: " << volumeFileName << std::endl;
@@ -25,7 +25,7 @@ namespace helper
 
       if(!file.is_open())
 	{	  
-	  return 0;
+	  return false;
 	}
   
       size_t size = file.tellg();
@@ -43,40 +43,8 @@ namespace helper
       //assert(buf.size() * sizeof(V) == size);
       file.read((char*)&buf[0], nElems*sizeof(V));
       
-      return buf.size();
-    }
-
-
-  
-
-  template<typename T>
-  bool readFile2(std::vector<std::vector<T>>& vecv,
-		 const std::string fname)
-  {
-    std::cout << "READ FILE VECTOR OF VECTORS\n";
-
-    std::vector<uint8_t> buf;
-    if(!readFile2(buf, fname))
-      return false;
-
-    uint8_t* p = &buf[0];
-
-    while(p < &buf[0]+buf.size())
-      {
-	const size_t n = *reinterpret_cast<size_t*>(p);
-
-	p+=sizeof(size_t);
-
-	const auto e = reinterpret_cast<T*>(p)+n;
-	
-	vecv.emplace_back(reinterpret_cast<T*>(p), e);
-
-	p=reinterpret_cast<uint8_t*>(e);
-      }
-    assert(p==&buf[0]+buf.size());
-    
-    return true;
-  }
+      return true;
+    }  
 };
 
 #endif //__HELPER_READ_FILE__

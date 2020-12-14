@@ -6,9 +6,9 @@
 namespace helper
 {  
 template<typename T>
-bool writeFile(T* ptr, size_t nElements, char* filenameOut, bool append=false)
+bool writeFile(T* ptr, size_t nElements, char* filenameOut)
 {
-  FILE* pFile = fopen ( filenameOut , append ? "wba" : "wb" );
+  FILE* pFile = fopen ( filenameOut , "wb" );
   if(pFile == NULL)
     return false;
   fwrite((void*)ptr, sizeof(T), nElements, pFile);
@@ -25,7 +25,7 @@ bool writeFile(T* ptr, size_t nElements, char* filenameOut, bool append=false)
 
 template<typename T>
 bool writeFile(T* ptr, size_t nElements,
-               std::string filenameOut, bool append=false)
+               std::string filenameOut)
 {
   /*
   FILE* pFile = fopen ( filenameOut , "wb" );
@@ -34,10 +34,7 @@ bool writeFile(T* ptr, size_t nElements,
   */
   
   std::ofstream myFile;
-  auto flags = std::ios::out | std::ios::binary;
-  if(append)
-    flags |= std::ios::app;
-  myFile.open (filenameOut.c_str(), flags);
+  myFile.open (filenameOut.c_str(), std::ios::out | std::ios::binary);
   if(!myFile.is_open())
     return false;
   myFile.write((char*)ptr, nElements*sizeof(T));
@@ -47,35 +44,10 @@ bool writeFile(T* ptr, size_t nElements,
 
 template<typename T>
 bool writeFile(const std::vector<T>& vec,
-               std::string filenameOut, bool append=false)
+               std::string filenameOut)
 {
-  return writeFile((T*)&vec[0], vec.size(), filenameOut, append);
+  return writeFile((T*)&vec[0], vec.size(), filenameOut);
 }
-
-  template<typename T>
-  bool writeFile(const std::vector<std::vector<T>>& vecv,
-		 std::string filenameOut, bool append=false)
-  {
-    std::cout << "WRITE FILE VECTOR OF VECTORS\n";
-    bool first = true;
-    for(const auto & vec : vecv)
-      {
-	{
-	  const bool app = (!first) || append;
-	  const size_t n = vec.size();
-	  if(!writeFile(&n, 1, filenameOut, app))
-	    return false;
-	}
-	first = false;
-
-	if(!writeFile(vec, filenameOut, true))
-	  return false;
-      }
-    return true;
-  }
-
-
-  
 
 template<typename O, typename T, typename S>
   bool writeFileConv(T* ptr, size_t nElements,

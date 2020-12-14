@@ -9,5 +9,4 @@
 
 //#pragma message(TODO "something")
 
-
 #endif //__HELPER_PRAGMA_MESSAGES__

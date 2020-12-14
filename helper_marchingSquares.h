@@ -4,9 +4,6 @@
 #include <limits>
 #include "helper/helper_util.h"
 
-#ifndef __HELPER__MARCHING_SQUARES__
-#define __HELPER__MARCHING_SQUARES__
-
 namespace helper
 {
   
@@ -26,8 +23,7 @@ namespace helper
   int getEdgeCount(CODE code)
   {
     return
-      //#ifndef __CUDACC__
-#ifndef  __CUDA_ARCH__
+#ifndef __CUDACC__
       __builtin_popcount(code)
 #else
       __popc(code)
@@ -99,7 +95,7 @@ namespace helper
 	return P(-1, 0);
       default:
 	assert(false);
-	return P(-1, -1);
+	return -1;
       }
   }
 
@@ -378,5 +374,3 @@ void walkIsoline(OP& op, P p, const V isovalue, TEXLOOKUP texLookup)
     while(q != p);
   }
 };
-
-#endif // __HELPER__MARCHING_SQUARES__

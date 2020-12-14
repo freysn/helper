@@ -24,7 +24,7 @@
 #include "graph/ebert_graph.h"
 #include "graph/min_cost_flow.h"
 #include "graph/connectivity.h"
-//#include "../volData/VolDataHandlerCUDA.h"
+#include "../volData/VolDataHandlerCUDA.h"
 #include "../volData/volData.h"
 //#include "flowShortcuts.h"
 #include <tuple>
@@ -623,7 +623,7 @@ inline __host__ __device__ double mlength2(const T& a)
   return dot(a,a);
 }
 */
-#if 0
+
 // Define a type which holds an unsigned integer value 
 template<std::size_t> struct int_{};
  
@@ -644,7 +644,6 @@ ostream& operator<<(ostream& out, const std::tuple<Args...>& t) {
   print_tuple(out, t, int_<sizeof...(Args)>()); 
   return out << ')';
 }
-#endif
 
 template<typename T>
 size_t getNDims()

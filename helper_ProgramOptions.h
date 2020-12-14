@@ -6,8 +6,7 @@
 #include "helper/helper_lexicalCast.h"
 #include <cassert>
 #include "helper/helper_asciiFile.h"
-
-#include <iostream>
+#include "helper/helper_string.h"
 
 namespace helper
 {
@@ -20,6 +19,7 @@ namespace helper
     _argc(argc), _argv(argv), _argi(from)
       {}
 
+#if 0
     static std::string trim(std::string s)
     {
       if(s=="")
@@ -36,18 +36,7 @@ namespace helper
       //std::cout << "|" << s << "|" << begin << "|" << end << "|" << len << "|\n";
       return s.substr(begin, len);
     }
-    
-    std::string argStr(size_t from=1) const
-    {
-      std::string o;      
-      for(size_t i=from; i<_argc; i++)
-	{
-	  if(o!="")	    
-	    o += " ";
-	  o += trim(std::string(_argv[i]));
-	}
-      return o;
-    }
+#endif
 
     std::string nextStr()
       {
@@ -77,7 +66,7 @@ namespace helper
 	{
 	  const bool match = (__s == trim(e));
 
-	  //std::cout << __s << " vs " << trim(e) << " " << match << std::endl;
+	  std::cout << __s << " vs " << trim(e) << " " << match << std::endl;
 	  if(match)
 	    return true;
 	}
@@ -106,7 +95,7 @@ namespace helper
 	  std::vector<std::string> out;
 	  for(int i=0; i<argi; i++)
 	    out.emplace_back(in[i]);
-	  return out;
+	    return out;
 	}
       } convert;
       return helper::writeASCIIv(convert(_argv, _argi), fname);

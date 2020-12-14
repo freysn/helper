@@ -3,6 +3,8 @@
 
 #include "helper/helper_progressBar.h"
 #include "volData/helper_readFile.h"
+#include "helper/helper_bzip.h"
+#include "helper/helper_util.h"
 
 namespace helper
 {
@@ -16,7 +18,13 @@ void readPNG(std::vector<T>& data, const std::string fname)
 }
 
   template<typename E>
-  void readPNG(std::vector<V2<E>>& data, const std::string fname)
+  void readPNG(std::vector<V2<E>>& /*data*/, const std::string /*fname*/)
+  {
+    assert(false);
+  }
+
+  template<typename E>
+  void readPNG(std::vector<V4<E>>& /*data*/, const std::string /*fname*/)
   {
     assert(false);
   }
