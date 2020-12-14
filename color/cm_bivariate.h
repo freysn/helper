@@ -1,6 +1,7 @@
 #ifndef __CM_BIVARIATE__
 #define __CM_BIVARIATE__
 
+#include "helper/color/cm_map.h"
 
 template<typename C>
 auto cm_bi_josh(size_t nElemsPerDim)
@@ -61,7 +62,7 @@ void draw()
 	  cols[x+y*n] = cm_bi_map_norm(
 				       coords, 
 				       biColMap,
-				       cm_nElemsPerDim);
+				       V2<size_t>(cm_nElemsPerDim, cm_nElemsPerDim));
 	}
     
     // helper::cimgWriteNormRGB("colorMap.png", cols, 

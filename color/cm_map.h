@@ -16,17 +16,17 @@ C cm_map_norm(const F v, const std::vector<C>& cm)
   return cm[idx];
 }
 
-template<typename F2, typename C>
-C cm_bi_map_norm(const F2 v, const std::vector<C>& cm, const size_t nElemsPerDim)
+template<typename F2, typename C, typename I2>
+C cm_bi_map_norm(const F2 v, const std::vector<C>& cm, const I2& nElemsPerDim)
 {
   using F = decltype(v.x);
   //assert(v >= 0. && v<=1.);
   const F under_one = std::nextafter(static_cast<F>(1), static_cast<F>(0));
     
-  const auto idx0 = static_cast<size_t>(helper::clamp(v.x, static_cast<F>(0), under_one)*nElemsPerDim);
-  const auto idx1 = static_cast<size_t>(helper::clamp(v.y, static_cast<F>(0), under_one)*nElemsPerDim);
+  const auto idx0 = static_cast<size_t>(helper::clamp(v.x, static_cast<F>(0), under_one)*nElemsPerDim.x);
+  const auto idx1 = static_cast<size_t>(helper::clamp(v.y, static_cast<F>(0), under_one)*nElemsPerDim.y);
   
-  const auto idx = idx0+nElemsPerDim*idx1;
+  const auto idx = idx0+nElemsPerDim.x*idx1;
   assert(idx<cm.size());
   return cm[idx];
 }

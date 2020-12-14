@@ -9,6 +9,7 @@
 #include <random>
 #include "helper/helper_idx.h"
 #include "helper/helper_assert.h"
+#include "helper/helper_vec.h"
 //#include "helper/helper_almostEquals.h"
 
 namespace helper

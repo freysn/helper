@@ -71,9 +71,10 @@ namespace helper
       }
     return true;
   }
-  
-template<typename V>
-bool readASCIIv(V& v, const std::string& fname, bool trimNomitEmptyLines=false)
+
+
+  template<typename V>
+  bool readASCIIv(V& v, const std::string& fname)
   {
     std::ifstream ifs(fname.c_str());
     if(!ifs.is_open())
@@ -81,13 +82,7 @@ bool readASCIIv(V& v, const std::string& fname, bool trimNomitEmptyLines=false)
     std::string line;
     v.clear();
     while (std::getline(ifs, line))
-      {
-	if(trimNomitEmptyLines)
-	  trim(line);
-
-	if(trimNomitEmptyLines && line != std::string(""))
-	  v.push_back(line);
-      }
+      v.push_back(line);      
     return true;
   }
 };

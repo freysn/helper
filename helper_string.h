@@ -66,6 +66,23 @@ std::vector<std::string> split(const std::string &s, char delim) {
     rtrim(s);
   }
 
+  // auto trim = [](std::string s)
+  // {
+  //   if(s=="")
+  //     return s;
+	      
+  //   const auto begin = s.find_first_not_of(" ");
+  //   if(begin == std::string::npos)
+  //     return std::string("");
+	      
+  //   const auto end = s.find_first_of(" ", begin);
+  //   size_t len = std::string::npos;
+  //   if(end != std::string::npos)
+  //     len = end-begin;
+  //   //std::cout << "|" << s << "|" << begin << "|" << end << "|" << len << "|\n";
+  //   return s.substr(begin, len);
+  // };
+
   // trim from start (copying)
   static inline std::string ltrim_copy(std::string s) {
     ltrim(s);
@@ -75,12 +92,6 @@ std::vector<std::string> split(const std::string &s, char delim) {
   // trim from end (copying)
   static inline std::string rtrim_copy(std::string s) {
     rtrim(s);
-    return s;
-  }
-
-  // trim from both ends (copying)
-  static inline std::string trim_copy(std::string s) {
-    trim(s);
     return s;
   }
 
@@ -124,6 +135,13 @@ std::vector<std::string> split(const std::string &s, char delim) {
     return true;
   }
 
+  template<>
+  bool s2x<float>(float& o, const std::string& str)
+  {
+    o=stof(str);
+    return true;
+  }
+
     template<>
     bool s2x<V4<uint8_t>>(V4<uint8_t>& /*o*/, const std::string& /*str*/)
     {
@@ -133,6 +151,13 @@ std::vector<std::string> split(const std::string &s, char delim) {
 
   template<>
   bool s2x<V4<double>>(V4<double>& /*o*/, const std::string& /*str*/)
+  {
+    assert(false);
+    return false;
+  }
+
+  template<>
+  bool s2x<V2<float>>(V2<float>& /*o*/, const std::string& /*str*/)
   {
     assert(false);
     return false;

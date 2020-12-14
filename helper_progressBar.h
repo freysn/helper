@@ -20,6 +20,30 @@ namespace helper
     if(progress == 1.)
       std::cout << std::endl;
   }
+
+  struct Progress
+  {
+    Progress(size_t nIterations, std::string identfier="") : _identifier(identfier), _nIterations(nIterations)
+    {}
+    
+    void print(size_t iteration)
+    {
+      const double progress = static_cast<double>(iteration) / _nIterations;
+      double elapsed = _timer.get_s();
+      double total = 0.;
+      if(progress > 0)
+	total = 1./progress * elapsed;
+      double remaining = total-elapsed;
+
+      std::stringstream ss;
+      ss << " | " << iteration << " of " << _nIterations << " | elapsed: " << elapsed << ", remaining: " << remaining << ", total: " << total;
+      progressBar(progress, _identifier + ss.str(), 20);
+    }
+    
+    helper::ChronoTimer _timer;
+    std::string _identifier;
+    size_t _nIterations;
+  };
 };
 
 #endif //__HELPER_PROGRESS_BAR__

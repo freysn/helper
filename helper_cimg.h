@@ -16,7 +16,7 @@
 #include <vector>
 #include <cassert>
 #include <iostream>
-#include <volData/vec.h>
+#include "helper/volData/vec.h"
 #include <ostream>
 #include "helper/helper_idx.h"
 #include "helper/helper_assert.h"

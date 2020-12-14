@@ -144,7 +144,7 @@ __host__ __device__
       __host__ __device__
 #endif
     //(decltype(swapX) op)
-      (uchar mode)
+      (uint8_t mode)
       {
 
 	struct
@@ -163,7 +163,7 @@ __host__ __device__
 	      return POS(x,y,z);
 	  }
 
-	  uchar mode=0;
+	  uint8_t mode=0;
 	} op;
 	    
 	op.mode = mode;

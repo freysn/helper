@@ -5,6 +5,7 @@
 #include "volData/helper_readFile.h"
 #include "helper/helper_bzip.h"
 #include "helper/helper_util.h"
+#include "helper/helper_io.h"
 
 namespace helper
 {
@@ -90,9 +91,29 @@ void readPNG(std::vector<uint8_t>& data, const std::string fname)
   size_t i=0;
   for(const auto t : selectedTimeSteps)
     {
-      //helper::progressBar(static_cast<double>(i*deltaT)/fileNames.size());
-      //const size_t result =
+#if 0
+      const auto & fname=fileNames[t*deltaT];
+      std::string postfix;
+      switch(ud._volumeFormat)
+	{
+	case volformat_raw:
+	  postfix="raw";
+	  break;
+	case volformat_raw_bz2:
+	  postfix="bz2";
+	  break;
+	case volformat_png:
+	  postfix="png";
+	  break;
+	default:
+	  break;
+	}
 
+      
+      std::cout << "read " << fname << std::endl;
+      const bool success = helper::readFileAuto(data[i], fname, postfix);
+      hassertm(success, fname);      
+#else	
       switch(ud._volumeFormat)
 	{
 	  case volformat_raw:
@@ -121,6 +142,7 @@ void readPNG(std::vector<uint8_t>& data, const std::string fname)
 		    << ud._volumeFormat << std::endl;
 	  assert(false);
 	}
+#endif
       i++;
     }
   //std::cout << std::endl;

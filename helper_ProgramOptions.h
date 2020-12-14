@@ -47,7 +47,7 @@ namespace helper
 	  {
 	    //std::cout << "argi " << _argi << " argc" << _argc << std::endl;
 	    _s = std::string(_argv[_argi]);
-	    _s = trim(_s);
+	    trim(_s);
 	    _argi++;
 	  }
 	return _s;
@@ -64,9 +64,10 @@ namespace helper
 	      
       for(auto e : xv)
 	{
-	  const bool match = (__s == trim(e));
+	  trim(e);
+	  const bool match = (__s == e);
 
-	  std::cout << __s << " vs " << trim(e) << " " << match << std::endl;
+	  std::cout << __s << " vs " << e << " " << match << std::endl;
 	  if(match)
 	    return true;
 	}

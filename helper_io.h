@@ -21,6 +21,25 @@ namespace helper
     return postfix==key || fnameExt(fname)==key;
   }
 
+  template<typename V>
+  bool readTXT(V& v, const std::string& fname, bool trimNomitEmptyLines=false)
+  {
+    std::ifstream ifs(fname.c_str());
+    if(!ifs.is_open())
+      return false;
+    std::string line;
+    v.clear();
+    while (std::getline(ifs, line))
+      {
+	if(trimNomitEmptyLines)
+	  trim(line);
+
+	if(trimNomitEmptyLines && line != std::string(""))
+	  v.push_back(line);
+      }
+    return true;
+  }
+
   template<typename T>
   bool readFileAuto(T& v, const std::string fname, const std::string postfix="")
   {
@@ -34,7 +53,7 @@ namespace helper
       {	
 	std::cout << "read txt file " << fname << std::endl;
 	std::vector<std::string> lines;
-	success=readASCIIv(lines, fname,
+	success=readTXT(lines, fname,
 			   true /*bool trimNomitEmptyLines*/);
 
 	std::cout << "there are " << lines.size()
@@ -95,7 +114,7 @@ namespace helper
     hassertm(is_txt(fname, postfix), "only txt files supported for strings\n");
       	
 	std::cout << "read txt file " << fname << std::endl;
-	return readASCIIv(v, fname,
+	return readTXT(v, fname,
 			   true /*bool trimNomitEmptyLines*/);
   }
 
