@@ -21,11 +21,11 @@
 //#include "base/logging.h"
 #include <cstdlib>
 //#include <helper_math.h>
-#include "graph/ebert_graph.h"
-#include "graph/min_cost_flow.h"
-#include "graph/connectivity.h"
-#include "../volData/VolDataHandlerCUDA.h"
-#include "../volData/volData.h"
+#include "ortools/graph/ebert_graph.h"
+#include "ortools/graph/min_cost_flow.h"
+//#include "ortools/graph/connectivity.h"
+#include "VolDataHandlerCUDA.h"
+#include "volData/volData.h"
 //#include "flowShortcuts.h"
 #include <tuple>
 #include <algorithm>
@@ -35,7 +35,7 @@
 #include <random>
 #include <chrono>
 #include <typeindex>
-#include "volData/equalizeSum.h"
+#include "equalizeSum.h"
 //#include "helper_idx.h"
 
 template<typename Q, typename D=double>
@@ -280,15 +280,15 @@ template<typename Q, typename E>
       cost_edges.push_back(std::make_tuple(0,2,5));
     */
   
-    auto add_edge = [&](int3 v, int3 delta, int cost/*, int capacity, int capacityRev*/)
+    auto add_edge = [&](V3<int> v, V3<int> delta, int cost/*, int capacity, int capacityRev*/)
       {
-        int3 v2 = v+delta;
+        V3<int> v2 = v+delta;
         if(v2.x < volDim.x &&
            v2.y < volDim.y &&
            v2.z < volDim.z)
           {
-            I iv = iii2i(v, volDim);
-            I iv2 = iii2i(v2, volDim);
+            I iv = helper::iii2i(v, volDim);
+            I iv2 = helper::iii2i(v2, volDim);
             //const I off = bipartite*data0.size();
             const I off = bipartite*volDim.x*volDim.y*volDim.z;
             cost_edges.emplace_back(iv, iv2+off, 
@@ -303,13 +303,13 @@ template<typename Q, typename E>
   
     
 
-    std::list<std::pair<int3,int>> deltaVec;
+    std::list<std::pair<V3<int>,int>> deltaVec;
 
     if(!bipartite)
       {
-        deltaVec.emplace_back(make_int3(1,0,0), 1);
-        deltaVec.emplace_back(make_int3(0,1,0), 1);
-        deltaVec.emplace_back(make_int3(0,0,1), 1);
+        deltaVec.emplace_back(make_V3<int>(1,0,0), 1);
+        deltaVec.emplace_back(make_V3<int>(0,1,0), 1);
+        deltaVec.emplace_back(make_V3<int>(0,0,1), 1);
     
         const size_t nEdges = volDim.x*volDim.y*volDim.z*deltaVec.size()*2;
         /*      
@@ -333,17 +333,17 @@ template<typename Q, typename E>
       }
 
     //int64_t sumDiffMass = 0;
-    int3 v;
+    V3<int> v;
     for(v.z=0; v.z<volDim.z; v.z++)
       for(v.y=0; v.y<volDim.y; v.y++)
         for(v.x=0; v.x<volDim.x; v.x++)
           {
-            auto idx = iii2i(v, volDim);
+            auto idx = helper::iii2i(v, volDim);
           
             if(bipartite)
               {
                 I idx2 = volDim.x*volDim.y*volDim.z;
-                int3 v2;
+                V3<int> v2;
                 for(v2.z=0; v2.z<volDim.z; v2.z++)
                   for(v2.y=0; v2.y<volDim.y; v2.y++)
                     for(v2.x=0; v2.x<volDim.x; v2.x++)                  
@@ -383,12 +383,12 @@ template<bool bipartite, typename I, typename I3, typename T>
   supply_nodes.resize(nRealNodes, 0);    
 
   //int64_t sumDiffMass = 0;
-  int3 v;
+  V3<int> v;
   for(v.z=0; v.z<volDim.z; v.z++)
     for(v.y=0; v.y<volDim.y; v.y++)
       for(v.x=0; v.x<volDim.x; v.x++)
         {
-          auto idx = iii2i(v, volDim);
+          auto idx = helper::iii2i(v, volDim);
           
           auto diff = (I)data0[idx]-(I)data1[idx];
           if(bipartite)
@@ -649,7 +649,7 @@ template<typename T>
 size_t getNDims()
 {
   auto tT = std::type_index(typeid(T));
-  if(tT == std::type_index(typeid(double2)))
+  if(tT == std::type_index(typeid(V2<double>)))
     return 2;
 
   assert(false);
@@ -657,7 +657,7 @@ size_t getNDims()
 }
 
 template<int idx>
-double& mget(double2& d)
+double& mget(V2<double>& d)
 {
   assert(idx==0 || idx==1);
   if(idx==0)
@@ -669,14 +669,14 @@ double& mget(double2& d)
 
 
 template<typename T>
-void massign(double2& d, const T& p)
+void massign(V2<double>& d, const T& p)
 {
   d.x = p.x;
   d.y = p.y;
 }
 
 /*
-void massign(pcl::PointXY& p, const double2& d)
+void massign(pcl::PointXY& p, const V2<double>& d)
 {
   p.x = d.x;
   p.y = d.y;

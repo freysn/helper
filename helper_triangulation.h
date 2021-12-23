@@ -7,11 +7,11 @@
 #include <CGAL/Delaunay_triangulation_3.h>
 #include <unordered_map>
 #include <unordered_set>
-#include "volData/helper_idx.h"
+#include "helper/helper_idx.h"
 //#include "distHeuristics.h"
 //#include "drawFlowGraph.h"
 
-#include "helper_Comp.h"
+//#include "helper_Comp.h"
 
 namespace helper_triangulation
 {

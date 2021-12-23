@@ -3100,6 +3100,18 @@ inline T length2(V3<T> a)
 }
 
 template<typename T>
+inline T length2(V4<T> a)
+{
+  return dot(a,a);
+}
+
+template<typename T>
+inline T length(V4<T> a)
+{
+  return std::sqrt(length2(a));
+}
+
+template<typename T>
 inline T length(T a)
 {
   return sqrtf(a*a);

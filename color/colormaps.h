@@ -3,7 +3,7 @@
 
 #include <vector>
 
-std::vector<float3>
+std::vector<V3<float>>
 #ifndef __CUDACC__
 get_colormap_brewer0
 #else
@@ -11,20 +11,20 @@ get_colormap_brewer0_ccc
 #endif
 ()
 {
-  const float3 col0 = make_float3(228,26,28)/255.f;
-  const float3 col1 = make_float3(55,126,184)/255.f;
-  const float3 col2 = make_float3(77,175,74)/255.f;
-  const float3 col3 = make_float3(152,78,163)/255.f;
-  const float3 col4 = make_float3(255,127,0)/255.f;
-  //const float3 col5 = make_float3(255,255,51)/255.f;
-  //const float3 col5 = make_float3(223,255,0)/255.f;
-  const float3 col5 = make_float3(0, 190, 190)/255.f;
-  const float3 col6 = make_float3(166,86,40)/255.f;
-  const float3 col7 = make_float3(247,19,191)/255.f;
-  const float3 col8 = make_float3(247,91,19)/255.f;
-  const float3 col9 = make_float3(91,19,47)/255.f;
+  const V3<float> col0 = make_V3<float>(228,26,28)/255.f;
+  const V3<float> col1 = make_V3<float>(55,126,184)/255.f;
+  const V3<float> col2 = make_V3<float>(77,175,74)/255.f;
+  const V3<float> col3 = make_V3<float>(152,78,163)/255.f;
+  const V3<float> col4 = make_V3<float>(255,127,0)/255.f;
+  //const V3<float> col5 = make_V3<float>(255,255,51)/255.f;
+  //const V3<float> col5 = make_V3<float>(223,255,0)/255.f;
+  const V3<float> col5 = make_V3<float>(0, 190, 190)/255.f;
+  const V3<float> col6 = make_V3<float>(166,86,40)/255.f;
+  const V3<float> col7 = make_V3<float>(247,19,191)/255.f;
+  const V3<float> col8 = make_V3<float>(247,91,19)/255.f;
+  const V3<float> col9 = make_V3<float>(91,19,47)/255.f;
 
-  std::vector<float3> cols(10);
+  std::vector<V3<float>> cols(10);
   cols[0] = col0;
   cols[1] = col1;
   cols[2] = col2;
@@ -40,14 +40,14 @@ get_colormap_brewer0_ccc
 
 #ifdef __CUDACC__
 const int nColorsMapBrewer0 = 10;
-__constant__ float3 c_colormap_brewer0[nColorsMapBrewer0];
+__constant__ V3<float> c_colormap_brewer0[nColorsMapBrewer0];
 
 void init_colormap_brewer0()
 {
-  std::vector<float3> c = get_colormap_brewer0_ccc();
+  std::vector<V3<float>> c = get_colormap_brewer0_ccc();
   assert(nColorsMapBrewer0 == c.size());
   checkCudaErrors(cudaMemcpyToSymbol(c_colormap_brewer0, &c[0],
-                                     sizeof(float3)*nColorsMapBrewer0));
+                                     sizeof(V3<float>)*nColorsMapBrewer0));
 }
 #endif
 
@@ -216,7 +216,7 @@ __device__
   F3 colormap_brewer0(const F& t/*, const I& nSlots*/)
 {
 #ifndef __CUDACC__    
-  std::vector<float3> c_colormap_brewer0 = get_colormap_brewer0();
+  std::vector<V3<float>> c_colormap_brewer0 = get_colormap_brewer0();
   const int nColorsMapBrewer0 = c_colormap_brewer0.size();
   //std::cout << t << " vs " << c_colormap_brewer0.size() << std::endl;
   assert(t >= 0 && t <= c_colormap_brewer0.size()-1.);
@@ -224,8 +224,8 @@ __device__
 #endif
   int idx0 = t;
   int idx1 = min(idx0+1, nColorsMapBrewer0-1);
-  float3 c0 = c_colormap_brewer0[idx0];
-  float3 c1 = c_colormap_brewer0[idx1];
+  V3<float> c0 = c_colormap_brewer0[idx0];
+  V3<float> c1 = c_colormap_brewer0[idx1];
 
   return (t-idx0)*c1+(idx1-t)*c0;
 }

@@ -1,6 +1,3 @@
-
-
-
 void init()
 {
   _render = false;
