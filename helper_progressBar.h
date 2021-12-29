@@ -14,7 +14,7 @@ namespace helper
       else if (i == pos) std::cout << ">";
       else std::cout << " ";
     }
-    std::cout << "] " << int(progress * 100.0) << " %\r";
+    std::cout << "] " << int(progress * 10000.0)/100. << " %\r";
     std::cout.flush();
 
     if(progress == 1.)
