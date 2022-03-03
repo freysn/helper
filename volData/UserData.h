@@ -93,6 +93,7 @@ enum volformat {
   volformat_raw,
   volformat_raw_bz2,
   volformat_png,
+  volformat_hdf5,
   volformat_fs3d=896,  
   volformat_none,
 };
@@ -238,7 +239,7 @@ class UserData
 
   static void getArguments(std::string line, std::vector<std::string>& args)
   {    
-    const char* argString = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ01234567890.-/._-:\\$*~";
+    const char* argString = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ01234567890.-/._-:\\$%*~";
  
     int index, index2;
     //get string arguments
@@ -305,6 +306,17 @@ class UserData
     {
       return _fileNameBuf;
     }
+ 
+  // YUYA ADDITION
+  std::string getHDF5GroupName() const
+    {
+      return _groupName;
+    }
+  std::string getHDF5DatasetName() const
+    {
+      return _datasetName;
+    }
+  // YUYA ADDITION END
 
   std::string getFileName(size_t t) const
     {
@@ -475,6 +487,13 @@ class UserData
   int _numFixedLen;
   bool _sameFileTime;
   unsigned int _timeStepOffset;
+  
+  // YUYA ADDITION
+  // Added for HDF5
+  std::string _groupName;
+  std::string _datasetName;
+  // YUYA ADDITION END
+
 
   voldattoscalar _volDatToScalar;
 

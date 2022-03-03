@@ -186,6 +186,16 @@ void processLine(char* cline)
         }
       */
     }
+
+  // YUYA ADDITION
+  else if(keyword == "HDFGROUP_NAME"){
+      _groupName  = args.at(0);
+  }
+  else if(keyword == "HDFDATASET_NAME"){
+      _datasetName  = args.at(0);
+  }
+  // YUYA ADDITION END
+
   else if(keyword == "REGION_FILE_LOAD")
     {
       _regionFileLoad = new char[args.at(0).size()+1];
@@ -245,6 +255,8 @@ void processLine(char* cline)
         _volumeFormat = volformat_raw_bz2;
       else if(args.at(0) == "PNG")
         _volumeFormat = volformat_png;
+      else if(args.at(0) == "HDF5")
+        _volumeFormat = volformat_hdf5;
       else if(args.at(0) == "FS3D")
 	{
 	  std::cout << "DETECTED volume format is FS3D\n";
