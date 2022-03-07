@@ -42,6 +42,30 @@ namespace helper
                 throw msg;
             }
         }
+    void getDataAtiHDF5(std::vector<unsigned char>& data, std::string groupName, std::string datasetName, std::string dataDir)
+        {
+
+            std::cout << dataDir << std::endl;
+            // Open the hdf5 file
+            try{
+                H5::H5File file = H5File(dataDir.c_str(), H5F_ACC_RDONLY);
+                H5::Group group = file.openGroup(groupName.c_str());
+                H5::DataSet dataset = group.openDataSet(datasetName.c_str());
+
+                // Get the size
+                hsize_t dims[1];
+                dataset.getSpace().getSimpleExtentDims(dims, NULL);
+                /* cout << "Size of data " << dims[0] << endl; */
+                unsigned char* data_temp = new unsigned char[dims[0]];
+                dataset.read(data_temp, H5::PredType::NATIVE_UINT8);
+                data.resize(dims[0]);
+                std::memcpy(&data[0], data_temp, sizeof(unsigned char) * dims[0]);
+                dataset.close();
+            } catch (Exception& e){
+                std::string msg( std::string("Could not open HDF5 File\n") + e.getCDetailMsg());
+                throw msg;
+            }
+        }
     template<typename V>
         void getDataAtiHDF5(std::vector<V>& data, std::string groupName, std::string datasetName, std::string dataDir)
         {
