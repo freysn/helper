@@ -11,6 +11,7 @@
 #include <string>
 #include <limits>
 #include <fstream>
+#include <filesystem>
 
 #include "hdf5.h"
 #include "H5Cpp.h"
@@ -82,6 +83,11 @@ namespace helper
 #ifdef VERBOSE
             std::cout << "Open File: " << volumeFileName << std::endl;
 #endif
+
+            if (std::filesystem::is_symlink(std::filesystem::symlink_status(volumeFileName.c_str()))){
+                std::cout << volumeFileName << " is a symlink" << std::endl;
+                volumeFileName = std::filesystem::read_symlink(volumeFileName);
+            }
             std::ifstream file(volumeFileName.c_str(), std::ios::in|std::ios::binary|std::ios::ate);
 
             if(!file.is_open())
@@ -89,6 +95,7 @@ namespace helper
                 return false;
             }
 
+            std::cout << "Reading: " << volumeFileName << std::endl;
             size_t size = file.tellg();
 
             if(nElems == std::numeric_limits<size_t>::max())

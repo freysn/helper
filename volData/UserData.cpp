@@ -14,6 +14,9 @@ void init()
   _volDataOffsetElems = 0;
   _volumeFormat = volformat_raw;
   _everyNthTimeStep = 1;
+
+  _spatial_subsampling = false;
+
 }
 
 UserData(const std::string fname)
@@ -251,6 +254,10 @@ void processLine(char* cline)
     {
       if(args.at(0) == "RAW")
         _volumeFormat = volformat_raw;
+      else if(args.at(0) == "RAW_XYZ")
+        _volumeFormat = volformat_raw_xyz;
+      else if(args.at(0) == "RAW_HURR")
+        _volumeFormat = volformat_raw_hurr;
       else if(args.at(0) == "RAW_BZ2")
         _volumeFormat = volformat_raw_bz2;
       else if(args.at(0) == "PNG")
@@ -357,6 +364,20 @@ void processLine(char* cline)
       //std::cout << "NUM FIXED LEN: " << _numFixedLen << std::endl;
       //assert(false);
     }
+    // YUYA ADDITION
+    else if(keyword == "TEMP_SUBSAMP_SEL")
+    {
+        std::fstream f(args.at(0));
+        int sel;
+        while (f >> sel){
+            _temporal_subselection_selections.push_back(sel);
+        }
+        _nTimeSteps = _temporal_subselection_selections.size();
+    }
+  else if(keyword == "SPATIAL_SUBSAMPLING"){
+      _spatial_subsampling = true;
+  }
+    // YUYA END
 
 #if 0
   //VolSliceMemory NUMBER_IN_MB

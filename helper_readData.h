@@ -69,7 +69,7 @@ namespace helper
             nTimeSteps = selectedTimeSteps.size();
 
 
-            const size_t nVoxels = ud.getNVoxels();
+            const size_t nVoxels = ud.getNVoxelsToRead();
 
             //std::cout << __PRETTY_FUNCTION__ << " there are " << nVoxels << " voxels per time step\n";
 

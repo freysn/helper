@@ -91,6 +91,8 @@ enum voldattype {
 
 enum volformat {
   volformat_raw,
+  volformat_raw_xyz,
+  volformat_raw_hurr,
   volformat_raw_bz2,
   volformat_png,
   volformat_hdf5,
@@ -329,6 +331,7 @@ class UserData
 	  std::cout << std::endl;
 	}
       #endif
+      std::cout << t << " " << _fileNameBuf.size() << std::endl;
       assert(t<_fileNameBuf.size());
       return _fileNameBuf[t];
     }
@@ -406,7 +409,8 @@ class UserData
 
 	  assert(fnames.empty());
 
-	  const size_t endT = std::min(results.size(), (size_t)_nTimeSteps);
+	  /* const size_t endT = std::min(results.size(), (size_t)_nTimeSteps); */
+	  const size_t endT = results.size();
 	  for(size_t t=_timeStepOffset; t<endT; t+=_everyNthTimeStep)
 	    {
 	      if(false)
@@ -420,7 +424,7 @@ class UserData
 	  // << " _nTimeSteps " << _nTimeSteps
 	  // << " _everyNthTimeStep " << _everyNthTimeStep
 	  // << std::endl;
-	  assert(fnames.size() == getNTimeSteps());
+	  /* assert(fnames.size() == getNTimeSteps()); */
 #if 0
 	  if(_nTimeSteps == 0)
             {
@@ -460,12 +464,28 @@ class UserData
     return iDivUp(_nTimeSteps-_timeStepOffset, _everyNthTimeStep);
   }
 
-  size_t getNVoxels() const
+  size_t getNVoxelsToRead() const
   {
     return
     static_cast<size_t>(_volDim.x)
     *static_cast<size_t>(_volDim.y)
     *static_cast<size_t>(_volDim.z);
+  }
+
+  size_t getNVoxels() const
+  {
+      if (_spatial_subsampling){
+          return
+              static_cast<size_t>(ceil(_volDim.x / 2.))
+              *static_cast<size_t>(ceil(_volDim.y / 2.))
+              *static_cast<size_t>(ceil(_volDim.z / 2.));
+
+      } else {
+          return
+              static_cast<size_t>(_volDim.x)
+              *static_cast<size_t>(_volDim.y)
+              *static_cast<size_t>(_volDim.z);
+      }
   }
 
   //application settings
@@ -492,6 +512,9 @@ class UserData
   // Added for HDF5
   std::string _groupName;
   std::string _datasetName;
+  std::vector<int> _temporal_subselection_selections;
+  bool _spatial_subsampling;
+
   // YUYA ADDITION END
 
 
