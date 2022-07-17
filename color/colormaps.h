@@ -11,18 +11,18 @@ get_colormap_brewer0_ccc
 #endif
 ()
 {
-  const V3<float> col0 = make_V3<float>(228,26,28)/255.f;
-  const V3<float> col1 = make_V3<float>(55,126,184)/255.f;
-  const V3<float> col2 = make_V3<float>(77,175,74)/255.f;
-  const V3<float> col3 = make_V3<float>(152,78,163)/255.f;
-  const V3<float> col4 = make_V3<float>(255,127,0)/255.f;
-  //const V3<float> col5 = make_V3<float>(255,255,51)/255.f;
-  //const V3<float> col5 = make_V3<float>(223,255,0)/255.f;
-  const V3<float> col5 = make_V3<float>(0, 190, 190)/255.f;
-  const V3<float> col6 = make_V3<float>(166,86,40)/255.f;
-  const V3<float> col7 = make_V3<float>(247,19,191)/255.f;
-  const V3<float> col8 = make_V3<float>(247,91,19)/255.f;
-  const V3<float> col9 = make_V3<float>(91,19,47)/255.f;
+  const V3<float> col0 = V3<float>(228,26,28)/255.f;
+  const V3<float> col1 = V3<float>(55,126,184)/255.f;
+  const V3<float> col2 = V3<float>(77,175,74)/255.f;
+  const V3<float> col3 = V3<float>(152,78,163)/255.f;
+  const V3<float> col4 = V3<float>(255,127,0)/255.f;
+  //const V3<float> col5 = V3<float>(255,255,51)/255.f;
+  //const V3<float> col5 = V3<float>(223,255,0)/255.f;
+  const V3<float> col5 = V3<float>(0, 190, 190)/255.f;
+  const V3<float> col6 = V3<float>(166,86,40)/255.f;
+  const V3<float> col7 = V3<float>(247,19,191)/255.f;
+  const V3<float> col8 = V3<float>(247,91,19)/255.f;
+  const V3<float> col9 = V3<float>(91,19,47)/255.f;
 
   std::vector<V3<float>> cols(10);
   cols[0] = col0;

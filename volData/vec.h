@@ -815,7 +815,7 @@ friend void operator-=(V3<T> &a, V3<T> b)
   #ifdef __CUDACC__
 __host__ __device__
 #endif
-  V3<T> minv(const V3<T>& a, const V3<T>& b)
+  V3<T> minv(V3<T> a, V3<T> b)
 {
   #ifndef __CUDACC__
   using namespace std;
@@ -1009,8 +1009,6 @@ struct V4
     return x<a.x || (x==a.x && (y<a.y || (y==a.y && (z<a.z || (z==a.z && w<a.w)))));
   }
 
-
-
         #ifdef __CUDACC__
   __device__ __host__
   #endif
@@ -1071,6 +1069,19 @@ friend V4<T> operator*(const T& rhs, V4<T> lhs)
     out.y = lhs.y*rhs;
     out.z = lhs.z*rhs;
     out.w = lhs.w*rhs;
+    return out;
+  }
+
+#ifdef __CUDACC__
+  __device__ __host__
+#endif
+  friend V4<T> operator*(const V4<T>& rhs, V4<T> lhs)
+  {
+    V4<T> out;
+    out.x = lhs.x*rhs.x;
+    out.y = lhs.y*rhs.y;
+    out.z = lhs.z*rhs.z;
+    out.w = lhs.w*rhs.w;
     return out;
   }
 
@@ -1222,43 +1233,48 @@ inline  void operator*=(V2<T> &a, T b)
     a.y *= b;
 }
 
-template<typename T>
-#ifdef __CUDACC__
-__host__ __device__
+/*
+struct float4
+  {
+    bool operator==(const float4& a) const
+    {
+      return a.x==x && a.y==y && a.z==z && a.w==w;
+    }
+    float x;
+    float y;
+    float z;
+    float w;
+  };
+
+struct uchar4
+  {
+    bool operator==(const uchar4& a) const
+    {
+      return a.x==x && a.y==y && a.z==z && a.w==w;
+    }
+    unsigned char x;
+    unsigned char y;
+    unsigned char z;
+    unsigned char w;
+  };
+*/
+
+
+//#endif
+
+////////////////////////////////////////////////////////////////////////////////
+// constructors
+////////////////////////////////////////////////////////////////////////////////
+/*
+template<typename T, typename IN>
+  #ifdef __NVCC__
+   __device__ __host__
 #endif
-V4<T> minv(const V4<T>& a, const V4<T>& b)
+T make_vec(const IN& a)
 {
-#ifndef __CUDACC__
-  using namespace std;
-#endif
-
-  return V4<T>
-    (
-     min(a.x, b.x),
-     min(a.y, b.y),
-     min(a.z, b.z),
-     min(a.w, b.w)
-     );
+  return T(a);
 }
-
-template<typename T>
-#ifdef __CUDACC__
-__host__ __device__
-#endif
-V4<T> maxv(const V4<T>& a, const V4<T>& b)
-{
-#ifndef __CUDACC__
-  using namespace std;
-#endif
-
-  return V4<T>
-    (
-     max(a.x, b.x),
-     max(a.y, b.y),
-     max(a.z, b.z),
-     max(a.w, b.w)
-     );
-}
+*/
 
 template<typename T>
 #ifdef __CUDACC__
@@ -3111,11 +3127,13 @@ inline T length(V4<T> a)
   return std::sqrt(length2(a));
 }
 
+
 template<typename T>
 inline T length(T a)
 {
   return sqrtf(a*a);
 }
+
 
 template<typename T>
       #ifdef __CUDACC__

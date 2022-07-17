@@ -57,10 +57,6 @@ namespace helper
             size_t nTimeSteps = ud.getNTimeSteps();
             const std::vector<std::string> fileNames = ud.getFileNameBuf();
 
-            // YUYA ADDITION
-            const std::vector<std::string> HDF5GroupName = ud.getHDF5GroupName();
-            const std::vector<std::string> HDF5DatasetName = ud.getHDF5DatasetName();
-            // YUYA ADDITION END
             
             //std::cout << __PRETTY_FUNCTION__ << "file names " << fileNames.size() << " vs " << nTimeSteps << std::endl;
             assert(nTimeSteps == fileNames.size());
@@ -142,10 +138,17 @@ namespace helper
                             readPNG(data[i], fileNames[t*deltaT]);
                         }
                         break;
+#ifdef USE_HDF5
                     case volformat_hdf5:
                         {
+			  // YUYA ADDITION
+			  const std::vector<std::string> HDF5GroupName = ud.getHDF5GroupName();
+			  const std::vector<std::string> HDF5DatasetName = ud.getHDF5DatasetName();
+			  // YUYA ADDITION END
+      
                             getDataAtiHDF5(data[i], i, HDF5GroupName, HDF5DatasetName, HDF5DataDirName);
                         }
+#endif
 #endif
                     default:
                         std::cout << __func__ << " ERROR, UNHANDLED FORMAT "

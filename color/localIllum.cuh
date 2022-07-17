@@ -12,7 +12,7 @@
 
 #ifndef __CUDACC__
 template<typename T>
-__device__
+
 T saturate(const T& x)
 {
   if(x<0)
@@ -24,16 +24,16 @@ T saturate(const T& x)
 }
 #endif
 
-__device__
-float3 blinnPhongShading(float3 ambientColor, float3 lightPos, float3 lightDiffuseColor, float lightDiffusePower, float3 lightSpecularColor, float lightSpecularPower, float3 pos3D, float3 viewDir, float3 normal)
+
+V3<float> blinnPhongShading(V3<float> ambientColor, V3<float> lightPos, V3<float> lightDiffuseColor, float lightDiffusePower, V3<float> lightSpecularColor, float lightSpecularPower, V3<float> pos3D, V3<float> viewDir, V3<float> normal)
 {
-  //float3 ambient = ambientColor;
-  float3 diffuse = make_float3(0.f);
-  float3 specular = make_float3(0.f);
+  //V3<float> ambient = ambientColor;
+  V3<float> diffuse(0., 0., 0.);
+  V3<float> specular(0., 0., 0.);
     
   if(lightDiffusePower > 0)
     {
-      float3 lightDir = lightPos - pos3D; // FIND THE VECTOR BETWEEN THE 3D POSITION IN SPACE OF THE SURFACE
+      V3<float> lightDir = lightPos - pos3D; // FIND THE VECTOR BETWEEN THE 3D POSITION IN SPACE OF THE SURFACE
       float distance = length(lightDir); // GET THE DISTANCE OF THIS VECTOR
       distance = distance * distance; // USES INVERSE SQUARE FOR DISTANCE ATTENUATION
       distance = 1.f;
@@ -49,7 +49,7 @@ float3 blinnPhongShading(float3 ambientColor, float3 lightPos, float3 lightDiffu
       diffuse = i * lightDiffuseColor * lightDiffusePower / distance; // CALCULATE THE DIFFUSE LIGHT FACTORING IN LIGHT COLOUR, POWER AND THE ATTENUATION
 
       //CALCULATE THE HALF VECTOR BETWEEN THE LIGHT VECTOR AND THE VIEW VECTOR. THIS IS CHEAPER THAN CALCULATING THE ACTUAL REFLECTIVE VECTOR
-      float3 h = normalize(lightDir + viewDir);
+      V3<float> h = normalize(lightDir + viewDir);
 
 	  const float specularHardness = 4.f;
       // INTENSITY OF THE SPECULAR LIGHT
@@ -63,8 +63,8 @@ float3 blinnPhongShading(float3 ambientColor, float3 lightPos, float3 lightDiffu
   return diffuse+0.3f*specular;
 }
 
-__device__
-void simpleCompositing(float4& sum, float& w, float4& col, float tstepModifier)
+
+void simpleCompositing(V4<float>& sum, float& w, V4<float>& col, float tstepModifier)
 {  
   w = adjustOpacityContribution(col.w, tstepModifier);
   over(sum, col, w);  
@@ -73,8 +73,8 @@ void simpleCompositing(float4& sum, float& w, float4& col, float tstepModifier)
 struct ColOp
   {
     template<size_t k>
-    __device__
-    void operator()(const float3& lightPos)
+    
+    void operator()(const V3<float>& lightPos)
     {
       float shadow = m_get<k>(shadows);
 
@@ -95,8 +95,8 @@ struct ColOp
 
 	  if(gradientLen > 0.0001)
 	    {
-	      const float3 lightDirNorm = normalize(lightPos-pos);
-	      //const float3 lightDirNorm = make_float3(0., 0., 1.);;
+	      const V3<float> lightDirNorm = normalize(lightPos-pos);
+	      //const V3<float> lightDirNorm = V3<float>(0., 0., 1.);;
 
 	      dotLightGradient = dot(lightDirNorm, gradientNorm);
 	      //dotLightGradient *= 0.8;
@@ -107,14 +107,14 @@ struct ColOp
 	  
 	    /*
 	  const float fac = lightContribFac*(1.f-shadow);
-	  const float3 specularColor = make_float3(1.f);
-	  const float3 diffspec = blinnPhongShading(make_float3(0.f), lightPos, diffuseColor, 1.f, specularColor, 1.f, pos, rayDir, gradientNorm);
+	  const V3<float> specularColor = V3<float>(1.f);
+	  const V3<float> diffspec = blinnPhongShading(V3<float>(0.f), lightPos, diffuseColor, 1.f, specularColor, 1.f, pos, rayDir, gradientNorm);
 */
 	  //colRGB += diffuseColor;
 
-	  const float3 shadedCol = dotLightGradient*diffuseColor;
+	  const V3<float> shadedCol = dotLightGradient*diffuseColor;
 	  
-	  //colRGB += make_float3(0.3*tmp, 0., tmp);
+	  //colRGB += V3<float>(0.3*tmp, 0., tmp);
 
 
 	  
@@ -132,25 +132,25 @@ struct ColOp
 	}
     }
     
-    float3 colRGB;// = make_float3(0.f);
-    float3 gradientNorm;
+    V3<float> colRGB;// = V3<float>(0.f);
+    V3<float> gradientNorm;
     float gradientLen;
-    float3 diffuseColor;
-    //float3 specularColor = make_float3(1.f);
-    float3 pos;
-    float3 rayDir;
-    float4 shadows;    
+    V3<float> diffuseColor;
+    //V3<float> specularColor = V3<float>(1.f);
+    V3<float> pos;
+    V3<float> rayDir;
+    V4<float> shadows;    
   };
 
 template<typename L>
-__device__
-float3 lighting(L lights, float3 col, float3 rayDir, float3 pos, float3 gradient, float4 shadows, float opacity)
+
+V3<float> lighting(L lights, V3<float> col, V3<float> rayDir, V3<float> pos, V3<float> gradient, V4<float> shadows/*, float opacity*/)
 {
   /*
   //return col;
   if(length(gradient)<0.1)
-    return make_float3(1., 0., 0.);
-  return make_float3(dot(normalize(lights.tail-pos), normalize(gradient)),
+    return V3<float>(1., 0., 0.);
+  return V3<float>(dot(normalize(lights.tail-pos), normalize(gradient)),
 		     dot(normalize(lights.tail-pos), normalize(gradient)),
 		     length(gradient));
   //auto lights = getLightsDefault();  
@@ -207,49 +207,49 @@ template<typename T, typename F>
 struct _lighting_ColOp
   {
     template<size_t k>
-    __device__
-    void operator()(const float3& lightPos)
+    
+    void operator()(const V3<float>& lightPos)
     {
       const float shadow = traceShadowRay(lightPos, pos, vol, texLookup, 1.f);
 
       if(shadow < 0.95)
 	{
 	  const float fac = 1.3*(1.f-shadow);
-	  const float3 specularColor = make_float3(1.f);
-	  colRGB += fac*blinnPhongShading(make_float3(0.f), lightPos, diffuseColor, 1.f, specularColor, 1.f, pos, rayDir, gradientNorm);
+	  const V3<float> specularColor = V3<float>(1.f);
+	  colRGB += fac*blinnPhongShading(V3<float>(0.f), lightPos, diffuseColor, 1.f, specularColor, 1.f, pos, rayDir, gradientNorm);
 	}
     }
     
-    float3 colRGB = make_float3(0.f);
-    float3 gradientNorm;
-    float3 diffuseColor;
-    float3 specularColor = make_float3(1.f);
-    float3 pos;
-    float3 rayDir;
+    V3<float> colRGB = V3<float>(0.f);
+    V3<float> gradientNorm;
+    V3<float> diffuseColor;
+    V3<float> specularColor = V3<float>(1.f);
+    V3<float> pos;
+    V3<float> rayDir;
     T vol;
     F texLookup;
   };
 
 template<bool texNormalized, typename T, typename F>
-__device__
-float3 lighting(float3 col, float3 rayDir, float3 pos, T vol,
+
+V3<float> lighting(V3<float> col, V3<float> rayDir, V3<float> pos, T vol,
 		float tstepModifier, float deltaGradient, F texLookup, int timeStep)
 {
   auto lights = getLightsDefault();
   
-  /* const float3 lightPos3 = make_float3(2.f, -2.f, -2.f); */
-  /* const float3 lightPos4 = make_float3(-2.f, 2.f, 2.f); */
-  /* const float3 lightPos5 = make_float3(-2.f, 2.f, -2.f); */
-  /* const float3 lightPos6 = make_float3(-2.f, -2.f, 2.f); */
-  /* const float3 lightPos7 = make_float3(-2.f, -2.f, -2.f); */
+  /* const V3<float> lightPos3 = V3<float>(2.f, -2.f, -2.f); */
+  /* const V3<float> lightPos4 = V3<float>(-2.f, 2.f, 2.f); */
+  /* const V3<float> lightPos5 = V3<float>(-2.f, 2.f, -2.f); */
+  /* const V3<float> lightPos6 = V3<float>(-2.f, -2.f, 2.f); */
+  /* const V3<float> lightPos7 = V3<float>(-2.f, -2.f, -2.f); */
       
       
       
-  float3 ambientColor = col;
+  V3<float> ambientColor = col;
   
-  //float3 gradient = gradientWithSobel3D(pos, deltaGradient);
-  ////float3 gradient = gradientWithSobel3D(pos, 4*deltaGradient, vol);
-  const float3 gradient = gradientWithCentralDifferences<texNormalized>(pos, deltaGradient, vol, texLookup);
+  //V3<float> gradient = gradientWithSobel3D(pos, deltaGradient);
+  ////V3<float> gradient = gradientWithSobel3D(pos, 4*deltaGradient, vol);
+  const V3<float> gradient = gradientWithCentralDifferences<texNormalized>(pos, deltaGradient, vol, texLookup);
   const float gradientLen = length(gradient);  
 
   _lighting_ColOp<T,F> colOp;
@@ -279,16 +279,16 @@ float3 lighting(float3 col, float3 rayDir, float3 pos, T vol,
 
 
 template<bool texNormalized, typename T, typename F>
-__device__
-void lightingCompositing(float4& sum, float& w, float4& col, float3 rayDir, float3 pos, T vol, float tstepModifier, float deltaGradient, F texLookup, int timeStep=0)
+
+void lightingCompositing(V4<float>& sum, float& w, V4<float>& col, V3<float> rayDir, V3<float> pos, T vol, float tstepModifier, float deltaGradient, F texLookup, int timeStep=0)
 {              
   //w = 1.f - __powf(1.f-col.w, tstepModifier);      
   ////w = adjustOpacityContribution(col.w, tstepModifier);
           
   //if(col.w > 0.0001f)
   {
-    const float3 colRGB =
-      lighting<texNormalized>(make_float3(col), rayDir, pos, vol,
+    const V3<float> colRGB =
+      lighting<texNormalized>(V3<float>(col), rayDir, pos, vol,
 			      tstepModifier,
 			      deltaGradient, texLookup, timeStep);
     col.x = colRGB.x;

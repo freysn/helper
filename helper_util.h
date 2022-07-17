@@ -107,6 +107,16 @@ namespace helper
     return max(T0(vmin), min(v, T0(vmax)));    
   }
 
+  template<typename F>
+  F clamp01(F f)
+  {
+#ifdef USE_CUDA_RUN_DEVICE
+    return __saturatef(f);
+#else
+    return std::max(static_cast<decltype(f)>(0), std::min(f, static_cast<decltype(f)>(1)));
+#endif
+  }
+  
   template<typename T, typename V>
 #ifdef USE_CUDA_RUN_DEVICE
   __host__ __device__
@@ -114,14 +124,7 @@ namespace helper
   void rgbaFloatToInt(T& x, T& y, T &z, T& w, V rgba)
     {
       
-    auto clamp01 = [](auto f)
-      {
-#ifdef USE_CUDA_RUN_DEVICE
-	return __saturatef(f);
-#else
-	return std::max(static_cast<decltype(f)>(0), std::min(f, static_cast<decltype(f)>(1)));
-#endif
-      };
+    
     
 
     // rgba.x = __saturatef(rgba.x);   // clamp to [0.0, 1.0]
@@ -163,7 +166,7 @@ namespace helper
   #ifdef __CUDACC__
   __device__ __host__
   #endif
-  bool apprEq(const F a, const F b, const F rel_tol=1.e-9, const F abs_tol=1.e-9)
+  bool apprEq(const F a, const F b, const F rel_tol=1.e-5, const F abs_tol=1.e-5)
   {
     //return (a+epsf >= b) && (b+epsf  >= a);
     //return almostEquals(a,b);    
@@ -384,6 +387,13 @@ namespace helper
   { 
     static_assert(std::is_integral<T>::value, "Integral required.");
     return (a % b != 0) ? (a / b + 1) : (a / b); 
+  }
+
+  template<typename T>
+  V2<T> iDivUp(V2<T> a, V2<T> b) 
+  { 
+    static_assert(std::is_integral<T>::value, "Integral required.");
+    return V2<T>(helper::iDivUp(a.x, b.x), helper::iDivUp(a.y,b.y));
   }
 
 

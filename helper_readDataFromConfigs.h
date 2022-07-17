@@ -2,7 +2,7 @@
 #define __HELPER_READ_DATA_FROM_CONFIG__
 
 #include "helper/helper_readData.h"
-#include "../volData/UserData.h"
+#include "volData/UserData.h"
 
 namespace helper
 {

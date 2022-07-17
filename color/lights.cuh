@@ -5,20 +5,20 @@
 #include "m_vec.h"
 
 #warning "GETLIGHTSDEFAULT IS DEPRECATED, BUT STILL USED TO CREATE SHADOW TEXTURE"
-typedef m_vec<float3, float3, float3, float3> lights_vec;
+typedef m_vec<V3<float>, V3<float>, V3<float>, V3<float>> lights_vec;
 #ifdef __NVCC__
 __device__
 #endif
 lights_vec getLightsDefault()
-//m_vec<float3, float3> getLightsDefault()
+//m_vec<V3<float>, V3<float>> getLightsDefault()
 {
   return lights_vec
-    (//make_float3(7.f, 7.f, 7.f),
-     make_float3(0.f, -7.f, -7.f),
-     make_float3(-7.f, 0.f, 7.f),
-     make_float3(7.f, 0.f, -7.f),
-     make_float3(0.f, 7.f, 0.f)
-     //make_float3(3.f, 7.f, 0.f)
+    (//V3<float>(7.f, 7.f, 7.f),
+     V3<float>(0.f, -7.f, -7.f),
+     V3<float>(-7.f, 0.f, 7.f),
+     V3<float>(7.f, 0.f, -7.f),
+     V3<float>(0.f, 7.f, 0.f)
+     //V3<float>(3.f, 7.f, 0.f)
      );
 }
 #endif

@@ -2,37 +2,47 @@
 #define __SHADOW__
 
 #include "m_vec.h"
+#include "helper/color/over.h"
+#include "helper/color/lookup.h"
 
 template<bool nearestMode, bool texNormalized, typename T, typename F>
-__device__
-float traceShadowRay(const float3 lightPos, const float3 pos, const T vol, const F& texLookup, const float tstepModifierShadow, const float tstepOff)
+
+double traceShadowRay(const V3<double> lightPos, const V3<double> pos, const T vol, const F& texLookup, const double tstepModifierShadow, const double tstepOff)
 {
   Ray eyeRay;
   eyeRay.o = pos;
-  eyeRay.d = normalize(lightPos-pos);
 
-  float tnear, tfar;
-  int hit = intersectBox(eyeRay, vol.boxMin, vol.boxMax, &tnear, &tfar);
+  //eyeRay.d = normalize(lightPos-pos);
+  eyeRay.d=lightPos-pos;
+  const auto len=length(eyeRay.d);
+  
+  eyeRay.d /= len;
+
+  double tnear, tfar;
+  int hit = helper::intersectBox(eyeRay, vol.boxMin, vol.boxMax, &tnear, &tfar);
   
   if (!hit)
     return 0.f;
   
   if (tnear < 0.0f)
     tnear = 0.0f;
+
+  // if light source is within volume
+  if(len < tfar)
+    tfar=len;
   
-  float op = 0.;
-  const float tstep = vol.tstepRef*tstepModifierShadow;
+  double op = 0.;
+  const double tstep = vol.tstepRef*tstepModifierShadow;
   
-  float t = tnear+tstepOff*vol.tstepRef;
+  double t = tnear+tstepOff*vol.tstepRef;
 
   //printf("%f %f\n", tnear, tfar);
   while(op<0.99 && t < tfar)
     {
-      const float3 p = eyeRay.o+t*eyeRay.d;
-      
-      const float w = adjustOpacityContribution(fetchCol<nearestMode, texNormalized>
-						(p, vol, texLookup).w,
-						tstepModifierShadow);
+      const V3<double> p = eyeRay.o+t*eyeRay.d;
+
+      const auto c = fetchCol<nearestMode, texNormalized>(p, vol, texLookup);
+      const double w = adjustOpacityContribution(c.w, tstepModifierShadow);
       
 
       op += w*(1.f-op);
@@ -47,26 +57,26 @@ template<bool nearestMode, bool texNormalized, typename O, typename T, typename 
 struct _traceShadowRays_ShadowOp
   {
     template<size_t k>
-    __device__
-    void operator()(const float3& lightPos)
+    
+    void operator()(const V3<double>& lightPos)
     {
-      const float shadow =
+      const double shadow =
 	traceShadowRay<nearestMode, texNormalized>
 	(lightPos, pos, vol, texLookup, tstepModifier, tstepOff);
       m_assign<k>(ops, shadow);
     }
 
-    float3 pos;
+    V3<double> pos;
     T vol;
     F texLookup;
-    float tstepModifier;
-    float tstepOff;
+    double tstepModifier;
+    double tstepOff;
     O ops;
   };
 
 template<bool nearestMode, bool texNormalized, typename O, typename L, typename T, typename F>
-__device__
-void traceShadowRays(O& ops, L lights, float3 pos, T vol, F texLookup, float tstepModifier, const float tstepOff)
+
+void traceShadowRays(O& ops, L lights, V3<double> pos, T vol, F texLookup, double tstepModifier, const double tstepOff)
 {
   _traceShadowRays_ShadowOp<nearestMode, texNormalized, O, T, F> shadowOp;
 

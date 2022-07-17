@@ -67,7 +67,7 @@ bool readConfig(const char* configFileName)
   //std::cout << "volume format is " << _volumeFormat << "\n";
   if(_volumeFormat == volformat_fs3d)
     {
-#ifdef NO_FS3D
+#if defined(NO_FS3D) || 1
       assert(false);
 #else
       std::cout << "volume format is FS3D\n";

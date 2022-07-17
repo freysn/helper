@@ -1,6 +1,10 @@
 #ifndef __OVER__
 #define __OVER__
 
+#ifndef __CUDACC__
+#include <cmath>
+#endif
+
 // "over" operator for front-to-back blending
 template<typename S, typename T, typename W>
 #ifdef __CUDACC__

@@ -2,6 +2,12 @@
 #define __HELPER_PROGRESS_BAR__
 
 #include <iostream>
+#include "helper/helper_ChronoTimer.h"
+
+#ifndef NO_OMP
+#include <omp.h>
+#endif
+
 namespace helper
 {
   void progressBar(double progress, const std::string message="", int barWidth=40)
@@ -14,11 +20,20 @@ namespace helper
       else if (i == pos) std::cout << ">";
       else std::cout << " ";
     }
-    std::cout << "] " << int(progress * 10000.0)/100. << " %\r";
+    std::cout << "] " << int(progress * 100.0) << " %\r";
     std::cout.flush();
 
     if(progress == 1.)
       std::cout << std::endl;
+  }
+
+
+  void progressBar_omp(double progress, const std::string message="", int barWidth=40)
+  {
+#ifndef NO_OMP
+    if(omp_get_thread_num()==0)
+#endif
+      progressBar(progress, message, barWidth);
   }
 
   struct Progress

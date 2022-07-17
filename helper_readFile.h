@@ -13,19 +13,22 @@
 #include <fstream>
 #include <filesystem>
 
+#ifdef USE_HDF5
 #include "hdf5.h"
 #include "H5Cpp.h"
+#endif
 
 
 namespace helper
 {
+#ifdef USE_HDF5
     void getDataAtiHDF5(std::vector<double>& data, std::string groupName, std::string datasetName, std::string dataDir)
         {
 
             std::cout << dataDir << std::endl;
             // Open the hdf5 file
             try{
-                H5::H5File file = H5File(dataDir.c_str(), H5F_ACC_RDONLY);
+	      H5::H5File file = H5::H5File(dataDir.c_str(), H5F_ACC_RDONLY);
                 H5::Group group = file.openGroup(groupName.c_str());
                 H5::DataSet dataset = group.openDataSet(datasetName.c_str());
 
@@ -38,7 +41,7 @@ namespace helper
                 data.resize(dims[0]);
                 std::memcpy(&data[0], data_temp, sizeof(double) * dims[0]);
                 dataset.close();
-            } catch (Exception& e){
+            } catch (H5::Exception& e){
                 std::string msg( std::string("Could not open HDF5 File\n") + e.getCDetailMsg());
                 throw msg;
             }
@@ -49,7 +52,7 @@ namespace helper
             std::cout << dataDir << std::endl;
             // Open the hdf5 file
             try{
-                H5::H5File file = H5File(dataDir.c_str(), H5F_ACC_RDONLY);
+	      H5::H5File file = H5::H5File(dataDir.c_str(), H5F_ACC_RDONLY);
                 H5::Group group = file.openGroup(groupName.c_str());
                 H5::DataSet dataset = group.openDataSet(datasetName.c_str());
 
@@ -62,7 +65,7 @@ namespace helper
                 data.resize(dims[0]);
                 std::memcpy(&data[0], data_temp, sizeof(unsigned char) * dims[0]);
                 dataset.close();
-            } catch (Exception& e){
+            } catch (H5::Exception& e){
                 std::string msg( std::string("Could not open HDF5 File\n") + e.getCDetailMsg());
                 throw msg;
             }
@@ -75,7 +78,7 @@ namespace helper
             data.resize(tmp.size());
             std::memcpy(&tmp[0], &data[0], tmp.size());
         }
-
+#endif // USE_HDF5
 
     template<typename V>
         bool readFile2(std::vector<V>& buf, std::string volumeFileName, size_t offsetElems=0, size_t nElems=std::numeric_limits<size_t>::max())

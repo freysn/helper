@@ -3,7 +3,7 @@ template<size_t k>
 #ifdef __NVCC__
 __device__
 #endif
-float m_get(const float4& f4)
+float m_get(const V4<float>& f4)
 {
   if(k==0)
     return f4.x;
@@ -19,7 +19,7 @@ template<size_t k>
 #ifdef __NVCC__
 __device__
 #endif
-void m_assign(float4& f4, float v)
+void m_assign(V4<double>& f4, float v)
 {
   if(k==0)
     f4.x = v;

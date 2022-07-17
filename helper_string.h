@@ -19,6 +19,8 @@
 #include "helper/helper_assert.h"
 #include "helper/volData/vec.h"
 
+#include "helper/helper_cmd.h"
+
 
 namespace helper
 {
@@ -161,6 +163,120 @@ std::vector<std::string> split(const std::string &s, char delim) {
   {
     assert(false);
     return false;
+  }
+
+
+  std::vector<std::string> genFileNames(const std::vector<std::string> _volumeFiles)
+  {
+    const size_t _everyNthTimeStep=1;
+    size_t _nTimeSteps=0;
+    const size_t _timeStepOffset=0;
+    const size_t _numFixedLen=6;
+      
+    if(_volumeFiles.size() > 1)
+      {
+	std::cout << "found more than one file: ";
+	for(auto v : _volumeFiles)
+	  std::cout << " " << v;
+	std::cout << std::endl;
+
+	return _volumeFiles;
+      }
+      
+    //assert(_nVolumeFiles == 1);
+    assert(_volumeFiles.size()==1);
+      
+    std::vector<std::string> fnames;
+
+    const std::string volumeFileName = _volumeFiles[/*fileName*/0];
+    std::string marker_dollar("$");
+    size_t startPos_dollar = volumeFileName.find(marker_dollar);
+    size_t startPos_star = volumeFileName.find("*");
+
+    const bool is_dollar = (startPos_dollar != std::string::npos);
+    const bool is_star = (startPos_star != std::string::npos);
+      
+    //assert(!is_dollar || !is_star);
+      
+    if(!is_dollar && !is_star)
+      {
+	fnames.push_back(volumeFileName);
+      }
+    else if(is_dollar)
+      {
+	for(unsigned int timeStep=0; 
+	    timeStep<_nTimeSteps; timeStep+=_everyNthTimeStep)
+	  {
+	      
+	    std::stringstream out;
+	    out << timeStep+_timeStepOffset;
+	    std::string numStr = out.str();
+	    while((int )numStr.size() < _numFixedLen)
+	      numStr = "0" + numStr;
+        
+	    std::string fname(volumeFileName);
+              
+	    fname.replace(startPos_dollar, marker_dollar.length(), numStr);
+              
+	    //std::cout << "gen file name: " << fname << std::endl;
+	    fnames.push_back(fname);
+	  }
+      }
+    else if(is_star)
+      {
+#ifdef NO_CMD
+	assert(false);
+	exit(-1);
+#else
+	//std::vector<std::string> results = call_cmd("ls " + volumeFileName);
+	const auto configSplitIdx = volumeFileName.find_last_of("/\\");
+	assert(configSplitIdx != std::string::npos);
+	const std::string cmdStr = "find " + volumeFileName.substr(0, configSplitIdx)+ " -maxdepth 1 -name \"" + volumeFileName.substr(configSplitIdx+1) + "\"";
+	std::cout << "cmdStr: " << cmdStr << std::endl;
+	  
+	std::vector<std::string> results = helper::cmd(cmdStr);
+
+	std::sort(results.begin(), results.end());
+	  
+	if(_nTimeSteps == 0)
+	  _nTimeSteps = results.size();
+
+	assert(fnames.empty());
+
+	const size_t endT = std::min(results.size(), (size_t)_nTimeSteps);
+	for(size_t t=_timeStepOffset; t<endT; t+=_everyNthTimeStep)
+	  {
+	    if(false)
+	      std::cout << "add time step " << t << " " << endT << std::endl;
+	    fnames.push_back(results[t]);
+	  }
+	  
+	// std::cout << __PRETTY_FUNCTION__
+	// << " fnames.size() " << fnames.size()
+	// << " getNTimeSteps() " << getNTimeSteps()
+	// << " _nTimeSteps " << _nTimeSteps
+	// << " _everyNthTimeStep " << _everyNthTimeStep
+	// << std::endl;
+#if 0
+	if(_nTimeSteps == 0)
+	  {
+	    _nTimeSteps = fnames.size();
+	    std::cout << "found nTimeSteps=" << _nTimeSteps << std::endl;
+	  }
+	else
+	  {
+	    assert(_nTimeSteps <= fnames.size());
+	    fnames.erase(fnames.begin()+_nTimeSteps, fnames.end());
+	  }
+#endif
+	/*
+          fnames = std::vector<std::string>(fnames.begin()+_timeStepOffset,
+	  fnames.begin()+std::min(_timeStepOffset+_nTimeSteps,
+	  (unsigned int)fnames.size()));
+	*/
+#endif
+      }
+    return fnames;
   }
 }
 
