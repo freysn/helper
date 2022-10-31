@@ -2,7 +2,7 @@
 #define __HELPER_PROGRESS_BAR__
 
 #include <iostream>
-#include "helper/helper_ChronoTimer.h"
+#include "helper_ChronoTimer.h"
 
 #ifndef NO_OMP
 #include <omp.h>

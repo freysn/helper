@@ -16,10 +16,10 @@
 #include <locale>
 
 #include <charconv>
-#include "helper/helper_assert.h"
-#include "helper/volData/vec.h"
+#include "helper_assert.h"
+#include "helper_volData/vec.h"
 
-#include "helper/helper_cmd.h"
+#include "helper_cmd.h"
 
 
 namespace helper

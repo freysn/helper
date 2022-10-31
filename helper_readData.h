@@ -1,11 +1,11 @@
 #ifndef __READ_DATA__
 #define __READ_DATA__
 
-#include "helper/helper_progressBar.h"
-#include "volData/helper_readFile.h"
-#include "helper/helper_bzip.h"
-#include "helper/helper_util.h"
-#include "helper/helper_io.h"
+#include "helper_progressBar.h"
+#include "helper_volData/helper_readFile.h"
+#include "helper_bzip.h"
+#include "helper_util.h"
+#include "helper_io.h"
 
 namespace helper
 {

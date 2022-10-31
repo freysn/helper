@@ -16,10 +16,10 @@
 #include <vector>
 #include <cassert>
 #include <iostream>
-#include "helper/volData/vec.h"
+#include "helper_volData/vec.h"
 #include <ostream>
-#include "helper/helper_idx.h"
-#include "helper/helper_assert.h"
+#include "helper_idx.h"
+#include "helper_assert.h"
 
 namespace helper
 {

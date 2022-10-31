@@ -3,7 +3,7 @@
 
 #include <cassert>
 #include <cmath>
-#include "helper/helper_util.h"
+#include "helper_util.h"
 
 template<typename F, typename C>
 C cm_map_norm(const F v, const std::vector<C>& cm)

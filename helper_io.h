@@ -1,11 +1,11 @@
 #ifndef __HELPER_IO__
 #define __HELPER_IO__
 
-#include "helper/helper_readFile.h"
-#include "helper/helper_writeFile.h"
-#include "helper/helper_bzip.h"
-#include "helper/helper_string.h"
-#include "helper/helper_asciiFile.h"
+#include "helper_readFile.h"
+#include "helper_writeFile.h"
+#include "helper_bzip.h"
+#include "helper_string.h"
+#include "helper_asciiFile.h"
 
 namespace helper
 {  

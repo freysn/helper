@@ -30,7 +30,7 @@
 //#include "read_FS3D_impl.h"
 //#include "fs3dreader_impl.h"
 
-#include "helper/helper_cmd.h"
+#include "helper_cmd.h"
 
 #ifndef M_VEC
 #define M_VEC

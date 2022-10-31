@@ -13,9 +13,9 @@
 #include <iostream>
 #include <tuple>
 #include <algorithm>
-#include "helper/helper_assert.h"
-#include "helper/helper_idx.h"
-#include "helper/helper_util.h"
+#include "helper_assert.h"
+#include "helper_idx.h"
+#include "helper_util.h"
 
 namespace helper
 {

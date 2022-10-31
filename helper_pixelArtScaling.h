@@ -4,7 +4,7 @@
 // https://en.wikipedia.org/wiki/Pixel-art_scaling_algorithms#cite_note-25
 // https://github.com/falichs/Depixelizing-Pixel-Art-on-GPUs
 
-#include "helper/helper_idx.h"
+#include "helper_idx.h"
 
 namespace helper
 {

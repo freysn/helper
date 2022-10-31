@@ -1,16 +1,16 @@
 #ifndef __HELPER_UTIL__
 #define __HELPER_UTIL__
 
-#include "color/over.h"
-#include "volData/vec.h"
+#include "helper_color/over.h"
+#include "helper_volData/vec.h"
 #include <unistd.h>
 #include <limits>
 #include <vector>
 #include <random>
-#include "helper/helper_idx.h"
-#include "helper/helper_assert.h"
-#include "helper/helper_vec.h"
-//#include "helper/helper_almostEquals.h"
+#include "helper_idx.h"
+#include "helper_assert.h"
+#include "helper_vec.h"
+//#include "helper_almostEquals.h"
 
 namespace helper
 {

@@ -2,7 +2,7 @@
 #define __HELPER_READ_FILE__
 
 #ifndef NO_CIMG
-#include "helper/helper_cimg.h"
+#include "helper_cimg.h"
 #endif
 //#include "read_FS3D_impl.h"
 //#include "fs3dreader_impl.h"
