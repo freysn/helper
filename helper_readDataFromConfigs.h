@@ -24,16 +24,6 @@ std::tuple<std::vector<std::vector<elem_t>>,V4<size_t>> readDataFromConfig(const
     const bool success = ud.readConfigOnly(configFile.c_str());
     hassert(success);
 
-#if __APPLE__
-    {
-      const std::string zydecoBasePath("/media/hdd_data");
-      if(ud._volumeFiles[0].find(zydecoBasePath) != std::string::npos)
-    {
-      ud._volumeFiles[0].replace(0, std::string(zydecoBasePath).length(), "/Users/freysn/dev");
-      std::cout << "|NEW FILE " << ud._volumeFiles[0]<< "|\n" ;
-    }
-    }
-#endif
     ud._fileNameBuf = ud.genFileNames();
     const std::tuple<size_t, size_t, size_t, size_t> dataType = ud.getType();
 

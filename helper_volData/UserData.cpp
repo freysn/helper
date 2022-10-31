@@ -40,7 +40,7 @@ bool readConfigOnly(const char* configFileName)
         {
           getline (myfile,line);
           //cout << line << endl;
-          processLine((char*)line.c_str());
+          processLine((char*)line.c_str(), configFileName);
         }
       myfile.close();
     }
@@ -121,7 +121,7 @@ bool readConfig(const char* configFileName)
   return true;
 }
 
-void processLine(char* cline)
+void processLine(char* cline, const char* configFileName)
 {
   std::string line(cline);
   //remove comments
@@ -176,6 +176,15 @@ void processLine(char* cline)
 	    {
 	      f.replace(it, static_cast<size_t>(1), getenv("HOME"));
 	    }
+
+	  namespace fs = std::filesystem;
+	  	
+	  if(!fs::path(f).has_parent_path())
+	    {
+	      f= (fs::path(configFileName).parent_path() / fs::path(f));
+	      std::cout << "add config path, yield file name: " << f << std::endl;
+	    }
+	  
 	}
       
       //_volumeFiles = new char*[_nVolumeFiles];

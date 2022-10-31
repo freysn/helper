@@ -37,6 +37,8 @@
 #endif
 #include "vec.h"
 
+#include <filesystem>
+
 //#include "helper/volData/helper_readFile.h"
 
 // using float2 = V2<float>;
