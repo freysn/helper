@@ -39,6 +39,7 @@ auto cm_bi_josh(size_t nElemsPerDim)
   return m;
 }
 
+#if 0
 void draw()
 {
   //
@@ -70,5 +71,5 @@ void draw()
   }
 
 }
-
+#endif
 #endif //__CM_BIVARIATE__
