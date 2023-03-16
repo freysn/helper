@@ -1,7 +1,7 @@
 #ifndef __CM_BIVARIATE__
 #define __CM_BIVARIATE__
 
-#include "helper/color/cm_map.h"
+#include "helper_color/cm_map.h"
 
 template<typename C>
 auto cm_bi_josh(size_t nElemsPerDim)
