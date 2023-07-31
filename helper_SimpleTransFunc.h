@@ -1,7 +1,7 @@
 #ifndef __HELPER_SIMPLE_TRANS_FUNC__
 #define __HELPER_SIMPLE_TRANS_FUNC__
 
-#include "volData/splitStr.h"
+#include "helper_volData/splitStr.h"
 #include <vector>
 
 namespace helper
